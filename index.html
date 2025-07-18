@@ -630,7 +630,12 @@ Edison and Ford Winter Estates | Historical | 20 min | 4.6</textarea>
             });
             
             // Show selected page
-            document.getElementById(pageId + '-page').style.display = 'block';
+            const targetPage = document.getElementById(pageId + '-page');
+            if (targetPage) {
+                targetPage.style.display = 'block';
+            } else {
+                console.log('Page not found: ' + pageId + '-page');
+            }
             
             // Update button states
             const buttons = document.querySelectorAll('.btn');
