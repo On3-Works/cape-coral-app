@@ -1,0 +1,11 @@
+{
+  "guestName": "Welcome Guest",
+  "checkIn": "2025-07-18",
+  "checkOut": "2025-07-21",
+  "guests": 2,
+  "doorCode": "1234",
+  "confirmation": "PENDING",
+  "wifiName": "CapeCoral_Retreat_Guest",
+  "wifiPassword": "Tropical2025!",
+  "lastUpdated": "2025-07-18T12:00:00.000Z"
+}
