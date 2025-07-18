@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cape Coral Home Retreat - Guest Portal</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Prevent zoom on double tap for kiosk mode */
+        * {
+            touch-action: manipulation;
+        }
+        
+        /* Hide scrollbars in kiosk mode */
+        .kiosk-mode {
+            overflow: hidden;
+        }
+        
+        /* Full screen app styles */
+        .app-container {
+            min-height: 100vh;
+            background: #F0F9FF;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { 
+            Home, 
+            Calendar, 
+            Users, 
+            MessageSquare, 
+            MapPin, 
+            Shield, 
+            Key, 
+            ClipboardList, 
+            AlertTriangle,
+            Phone,
+            Settings,
+            LogIn,
+            LogOut,
+            Camera,
+            CheckCircle,
+            XCircle,
+            Star,
+            Wifi,
+            WifiOff,
+            Menu,
+            X
+        } = lucide;
+
+        const RentalPropertyApp = () => {
+            const [currentView, setCurrentView] = useState('guest-home');
+            const [isAdmin, setIsAdmin] = useState(false);
+            const [isOnline, setIsOnline] = useState(navigator.onLine);
+            const [showMobileMenu, setShowMobileMenu] = useState(false);
+            
+            // Property data state
+            const [propertyData, setPropertyData] = useState({
+                name: 'Cape Coral Home Retreat',
+                location: 'Cape Coral, Florida',
+                logo: '',
+                backgroundImage: '',
+                colorPalette: {
+                    primary: '#00B4D8',
+                    secondary: '#90E0EF',
+                    accent: '#F77F00',
+                    background: '#F0F9FF',
+                    text: '#0F172A'
+                },
+                currentBooking: {
+                    guestName: 'John & Sarah Smith',
+                    checkIn: '2025-07-18',
+                    checkOut: '2025-07-21',
+                    guests: 4,
+                    keyCode: '1234',
+                    confirmationCode: 'ABC123'
+                },
+                rules: [
+                    'Check-in: 4:00 PM - 9:00 PM (Please contact us if arriving after 9 PM)',
+                    'Check-out: 11:00 AM (Late check-out available upon request)',
+                    'No smoking anywhere on the property (including lanai and pool area)',
+                    'Maximum occupancy: 6 guests',
+                    'Quiet hours: 10:00 PM - 8:00 AM (Respect our neighbors)',
+                    'Pool hours: 8:00 AM - 10:00 PM',
+                    'No glass containers in pool area',
+                    'Please rinse off before entering pool after beach visits',
+                    'All towels and linens provided - no need to bring your own',
+                    'Parking: Maximum 2 vehicles in driveway',
+                    'No pets allowed (service animals welcome with prior notice)',
+                    'Please dispose of trash in provided bins - pickup is Wednesday'
+                ],
+                emergencyContacts: [
+                    { name: 'Property Manager - Cape Coral Home Retreat', phone: '+1 (239) 574-1234', type: 'primary' },
+                    { name: 'Lee County Emergency Services', phone: '911', type: 'emergency' },
+                    { name: 'Cape Coral Police Department', phone: '+1 (239) 574-3223', type: 'emergency' },
+                    { name: 'Lee Memorial Hospital', phone: '+1 (239) 343-2000', type: 'medical' },
+                    { name: 'Cape Coral Hospital', phone: '+1 (239) 424-2000', type: 'medical' }
+                ],
+                attractions: [
+                    { name: 'Cape Coral Beach at Four Freedoms Park', type: 'Beach', distance: '8 min', rating: 4.3 },
+                    { name: 'Rotary Park Environmental Center', type: 'Nature', distance: '12 min', rating: 4.4 },
+                    { name: 'Sun Splash Family Waterpark', type: 'Entertainment', distance: '15 min', rating: 4.1 },
+                    { name: 'Cape Coral Farmers Market', type: 'Shopping', distance: '10 min', rating: 4.2 },
+                    { name: 'Yacht Club Beach', type: 'Beach', distance: '6 min', rating: 4.5 },
+                    { name: 'Edison and Ford Winter Estates', type: 'Historical', distance: '20 min', rating: 4.6 },
+                    { name: 'Downtown Fort Myers River District', type: 'Entertainment', distance: '25 min', rating: 4.3 },
+                    { name: 'Sanibel Island Beaches', type: 'Beach', distance: '35 min', rating: 4.7 }
+                ]
+            });
+
+            const [messages, setMessages] = useState([]);
+            const [newMessage, setNewMessage] = useState('');
+            const [checkInData, setCheckInData] = useState({
+                keyCodeVerified: false,
+                inventoryChecked: false,
+                damageReport: [],
+                photos: []
+            });
+
+            // Simulate online/offline status
+            useEffect(() => {
+                const handleOnline = () => setIsOnline(true);
+                const handleOffline = () => setIsOnline(false);
+                
+                window.addEventListener('online', handleOnline);
+                window.addEventListener('offline', handleOffline);
+                
+                return () => {
+                    window.removeEventListener('online', handleOnline);
+                    window.removeEventListener('offline', handleOffline);
+                };
+            }, []);
+
+            const sendMessage = () => {
+                if (newMessage.trim()) {
+                    setMessages([...messages, {
+                        id: Date.now(),
+                        text: newMessage,
+                        sender: 'guest',
+                        timestamp: new Date().toLocaleTimeString()
+                    }]);
+                    setNewMessage('');
+                    
+                    // Simulate property manager response
+                    setTimeout(() => {
+                        setMessages(prev => [...prev, {
+                            id: Date.now(),
+                            text: "Thank you for your message! We'll respond shortly.",
+                            sender: 'manager',
+                            timestamp: new Date().toLocaleTimeString()
+                        }]);
+                    }, 2000);
+                }
+            };
+
+            const Navigation = () => (
+                <div className="bg-white shadow-lg">
+                    <div className="flex items-center justify-between p-4">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center border-b-2 border-orange-400">
+                                <Home className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-bold text-gray-900">{propertyData.name}</h1>
+                                <p className="text-sm text-gray-600">{propertyData.location}</p>
+                            </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-4">
+                            <div className={`flex items-center space-x-2 px-3 py-1 rounded-full ${
+                                isOnline ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
+                                {isOnline ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
+                                <span className="text-sm">{isOnline ? 'Online' : 'Offline'}</span>
+                            </div>
+                            
+                            <button
+                                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                                className="md:hidden p-2 text-gray-600"
+                            >
+                                {showMobileMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {/* Navigation Menu */}
+                    <div className={`${showMobileMenu ? 'block' : 'hidden'} md:block border-t`}>
+                        <div className="flex flex-col md:flex-row md:justify-center space-y-2 md:space-y-0 md:space-x-8 p-4">
+                            {!isAdmin ? (
+                                <>
+                                    <NavButton icon={Home} label="Welcome" view="guest-home" />
+                                    <NavButton icon={Key} label="Check In/Out" view="check-in-out" />
+                                    <NavButton icon={MessageSquare} label="Messages" view="messages" />
+                                    <NavButton icon={MapPin} label="Attractions" view="attractions" />
+                                    <NavButton icon={ClipboardList} label="Rules" view="rules" />
+                                    <NavButton icon={Phone} label="Emergency" view="emergency" />
+                                    <NavButton icon={Settings} label="Admin" view="admin-login" />
+                                </>
+                            ) : (
+                                <>
+                                    <NavButton icon={Calendar} label="Bookings" view="admin-bookings" />
+                                    <NavButton icon={Users} label="Guests" view="admin-guests" />
+                                    <NavButton icon={Settings} label="Settings" view="admin-settings" />
+                                    <NavButton icon={MessageSquare} label="Messages" view="admin-messages" />
+                                    <NavButton icon={LogOut} label="Logout" onClick={() => setIsAdmin(false)} />
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const NavButton = ({ icon: Icon, label, view, onClick }) => (
+                <button
+                    onClick={onClick || (() => setCurrentView(view))}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors border-b-2 ${
+                        currentView === view 
+                            ? 'bg-cyan-500 text-white border-orange-400' 
+                            : 'text-gray-600 hover:bg-cyan-50 border-transparent hover:border-cyan-200'
+                    }`}
+                >
+                    <Icon className="w-5 h-5" />
+                    <span className="font-medium">{label}</span>
+                </button>
+            );
+
+            const GuestHome = () => (
+                <div className="space-y-6">
+                    <div className="bg-cyan-500 text-white p-6 rounded-xl shadow-lg border-b-4 border-orange-400">
+                        <h2 className="text-2xl font-bold mb-2">Welcome to {propertyData.name}!</h2>
+                        <p className="text-cyan-100">Your tropical paradise awaits in beautiful Cape Coral, Florida!</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-cyan-500">
+                            <h3 className="text-lg font-semibold mb-4 flex items-center">
+                                <Calendar className="w-5 h-5 mr-2 text-cyan-600" />
+                                Current Booking
+                            </h3>
+                            <div className="space-y-2">
+                                <p><strong>Guest:</strong> {propertyData.currentBooking.guestName}</p>
+                                <p><strong>Check-in:</strong> {propertyData.currentBooking.checkIn}</p>
+                                <p><strong>Check-out:</strong> {propertyData.currentBooking.checkOut}</p>
+                                <p><strong>Guests:</strong> {propertyData.currentBooking.guests}</p>
+                                <p><strong>Confirmation:</strong> {propertyData.currentBooking.confirmationCode}</p>
+                            </div>
+                        </div>
+                        
+                        <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-orange-400">
+                            <h3 className="text-lg font-semibold mb-4 flex items-center">
+                                <Key className="w-5 h-5 mr-2 text-orange-500" />
+                                Access Information
+                            </h3>
+                            <div className="space-y-2">
+                                <p><strong>Door Code:</strong> {propertyData.currentBooking.keyCode}</p>
+                                <p><strong>WiFi:</strong> CapeCoral_Retreat_Guest</p>
+                                <p><strong>Password:</strong> Tropical2025!</p>
+                                <p className="text-sm text-gray-600">Please keep this information secure</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const Emergency = () => (
+                <div className="space-y-6">
+                    <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500">
+                        <h2 className="text-2xl font-bold mb-6 flex items-center">
+                            <Phone className="w-6 h-6 mr-3 text-red-600" />
+                            Emergency Contacts
+                        </h2>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {propertyData.emergencyContacts.map((contact, index) => (
+                                <div key={index} className={`p-4 rounded-lg border ${
+                                    contact.type === 'emergency' ? 'border-red-200 bg-red-50' : 
+                                    contact.type === 'medical' ? 'border-orange-200 bg-orange-50' : 
+                                    'border-blue-200 bg-blue-50'
+                                }`}>
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <h3 className="font-semibold">{contact.name}</h3>
+                                            <p className="text-2xl font-bold text-gray-800">{contact.phone}</p>
+                                        </div>
+                                        <a 
+                                            href={`tel:${contact.phone}`}
+                                            className={`px-4 py-2 rounded-lg text-white font-medium ${
+                                                contact.type === 'emergency' ? 'bg-red-600 hover:bg-red-700' : 
+                                                contact.type === 'medical' ? 'bg-orange-600 hover:bg-orange-700' : 
+                                                'bg-blue-600 hover:bg-blue-700'
+                                            } transition-colors`}
+                                        >
+                                            Call
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const Attractions = () => (
+                <div className="space-y-6">
+                    <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-cyan-500">
+                        <h2 className="text-2xl font-bold mb-6 flex items-center">
+                            <MapPin className="w-6 h-6 mr-3 text-cyan-600" />
+                            Local Attractions
+                        </h2>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {propertyData.attractions.map((attraction, index) => (
+                                <div key={index} className="p-4 border rounded-lg hover:shadow-md transition-shadow border-l-4 border-orange-400">
+                                    <div className="flex items-start justify-between">
+                                        <div>
+                                            <h3 className="font-semibold text-lg">{attraction.name}</h3>
+                                            <p className="text-gray-600">{attraction.type}</p>
+                                            <p className="text-sm text-gray-500">{attraction.distance} drive</p>
+                                        </div>
+                                        <div className="flex items-center space-x-1">
+                                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                                            <span className="text-sm font-medium">{attraction.rating}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const Rules = () => (
+                <div className="space-y-6">
+                    <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-cyan-500">
+                        <h2 className="text-2xl font-bold mb-6 flex items-center">
+                            <ClipboardList className="w-6 h-6 mr-3 text-cyan-600" />
+                            Property Rules & Guidelines
+                        </h2>
+                        
+                        <div className="space-y-3">
+                            {propertyData.rules.map((rule, index) => (
+                                <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg border-l-4 border-orange-400">
+                                    <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                                    <span className="text-gray-800">{rule}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const AdminLogin = () => (
+                <div className="flex items-center justify-center min-h-96">
+                    <div className="bg-white p-8 rounded-xl shadow-sm max-w-md w-full border-l-4 border-cyan-500">
+                        <h2 className="text-2xl font-bold mb-6 text-center">Admin Access</h2>
+                        <div className="space-y-4">
+                            <input
+                                type="password"
+                                placeholder="Admin Password"
+                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                            />
+                            <button
+                                onClick={() => setIsAdmin(true)}
+                                className="w-full bg-cyan-500 text-white py-3 rounded-lg hover:bg-cyan-600 transition-colors border-b-2 border-orange-400"
+                            >
+                                Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderCurrentView = () => {
+                switch (currentView) {
+                    case 'guest-home': return <GuestHome />;
+                    case 'emergency': return <Emergency />;
+                    case 'attractions': return <Attractions />;
+                    case 'rules': return <Rules />;
+                    case 'admin-login': return <AdminLogin />;
+                    default: return <GuestHome />;
+                }
+            };
+
+            return (
+                <div className="min-height: 100vh; bg-gray-50 app-container">
+                    <Navigation />
+                    
+                    <main className="max-w-7xl mx-auto px-4 py-8">
+                        {renderCurrentView()}
+                    </main>
+                    
+                    {/* Offline banner */}
+                    {!isOnline && (
+                        <div className="fixed bottom-4 left-4 right-4 bg-red-600 text-white p-4 rounded-lg shadow-lg z-50">
+                            <div className="flex items-center justify-center space-x-2">
+                                <WifiOff className="w-5 h-5" />
+                                <span>You're offline. Some features may be limited.</span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<RentalPropertyApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
