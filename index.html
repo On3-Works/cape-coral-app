@@ -1059,7 +1059,18 @@ Seed to Table | Restaurant | 15.2 miles to Naples | 25 min drive | 5.0</textarea
             // Secret key combination to show admin button (Ctrl+Shift+A)
             document.addEventListener('keydown', function(e) {
                 if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                    document.getElementById('admin-btn').style.display = 'inline-block';
+                    const adminBtn = document.getElementById('admin-btn');
+                    if (adminBtn.style.display === 'none' || adminBtn.style.display === '') {
+                        adminBtn.style.display = 'inline-block';
+                        showAlert('Admin access enabled', 'success');
+                    } else {
+                        adminBtn.style.display = 'none';
+                        // If currently in admin mode, logout
+                        if (document.getElementById('admin-nav').style.display === 'flex') {
+                            logout();
+                        }
+                        showAlert('Admin access hidden', 'info');
+                    }
                     e.preventDefault();
                 }
             });
