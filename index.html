@@ -65,11 +65,6 @@
         .btn-success:hover {
             background: linear-gradient(135deg, #059669, #047857);
         }
-        .btn:disabled {
-            background: #9CA3AF !important;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
         .card {
             background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
             padding: 24px;
@@ -116,7 +111,7 @@
             margin-bottom: 8px;
             color: #374151;
         }
-        .form-group input, .form-group textarea, .form-group select {
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #E5E7EB;
@@ -125,7 +120,7 @@
             transition: border-color 0.2s ease;
             box-sizing: border-box;
         }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+        .form-group input:focus, .form-group textarea:focus {
             border-color: #00B4D8;
             outline: none;
             box-shadow: 0 0 0 3px rgba(0,180,216,0.1);
@@ -207,17 +202,6 @@
                 align-items: center;
             }
         }
-        .integration-section {
-            background: linear-gradient(135deg, #F0F9FF, #E0F2FE);
-            padding: 25px;
-            border-radius: 12px;
-            margin: 25px 0;
-            border-left: 5px solid #3B82F6;
-        }
-        .cleaning-history {
-            max-height: 300px;
-            overflow-y: auto;
-        }
     </style>
 </head>
 <body>
@@ -228,16 +212,13 @@
             <button class="btn active" onclick="showPage('home', this)">🏠 Welcome</button>
             <button class="btn" onclick="showPage('access', this)">🔑 Access Info</button>
             <button class="btn" onclick="showPage('attractions', this)">📍 Attractions</button>
-            <button class="btn" onclick="showPage('music', this)">🎵 Music</button>
             <button class="btn" onclick="showPage('rules', this)">📋 Rules</button>
             <button class="btn" onclick="showPage('emergency', this)">📞 Emergency</button>
             <button class="btn" id="admin-btn" onclick="showPage('admin-login', this)" style="display: none;">⚙️ Admin</button>
         </div>
         <div id="admin-nav" class="nav-grid" style="display: none;">
-            <button class="btn" onclick="showPage('admin-bookings', this)">📅 Bookings</button>
-            <button class="btn" onclick="showPage('admin-property', this)">🏠 Property</button>
-            <button class="btn" onclick="showPage('admin-integrations', this)">🔗 Integrations</button>
-            <button class="btn" onclick="showPage('admin-data', this)">💾 Data</button>
+            <button class="btn" onclick="showPage('admin-dashboard', this)">📊 Dashboard</button>
+            <button class="btn" onclick="showPage('admin-settings', this)">⚙️ Settings</button>
             <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
         </div>
     </div>
@@ -254,8 +235,8 @@
                 <div class="card">
                     <h3>📅 Current Booking</h3>
                     <p><strong>Guest:</strong> <span id="display-guest-name">John & Sarah Smith</span></p>
-                    <p><strong>Check-in:</strong> <span id="display-checkin">2025-07-18</span></p>
-                    <p><strong>Check-out:</strong> <span id="display-checkout">2025-07-21</span></p>
+                    <p><strong>Check-in:</strong> <span id="display-checkin">July 18, 2025</span></p>
+                    <p><strong>Check-out:</strong> <span id="display-checkout">July 21, 2025</span></p>
                     <p><strong>Guests:</strong> <span id="display-guest-count">4</span></p>
                     <p><strong>Confirmation:</strong> <span id="display-confirmation">ABC123</span></p>
                 </div>
@@ -275,13 +256,13 @@
             <h2>🔑 Access Information</h2>
             <div class="stats-grid">
                 <div class="card" style="background: linear-gradient(135deg, #DBEAFE, #BFDBFE); border-left-color: #2563EB;">
-                    <h3>Door Access</h3>
+                    <h3>🚪 Door Access</h3>
                     <p style="font-size: 48px; font-weight: bold; color: #2563EB; margin: 15px 0; text-align: center;"><span id="access-door-code">1234</span></p>
                     <p style="text-align: center;">Enter this code on the front door keypad</p>
                 </div>
                 
                 <div class="card" style="background: linear-gradient(135deg, #DCFCE7, #BBF7D0); border-left-color: #16A34A;">
-                    <h3>WiFi Network</h3>
+                    <h3>📶 WiFi Network</h3>
                     <p style="font-weight: bold; color: #16A34A; font-size: 18px;"><span id="access-wifi-name">CapeCoral_Retreat_Guest</span></p>
                     <p style="font-weight: bold; color: #16A34A; font-size: 18px;"><span id="access-wifi-password">Tropical2025!</span></p>
                     <p class="small-text">Connect your devices to stay online</p>
@@ -325,112 +306,6 @@
                     <h3>Seed to Table</h3>
                     <p>Restaurant • 15.2 miles to Naples (25 min drive) • ⭐ 5.0</p>
                 </div>
-            </div>
-        </div>
-
-        <!-- Music/Spotify Page -->
-        <div id="music-page" style="display: none;">
-            <h2>🎵 Home Audio System</h2>
-            
-            <div class="card" style="background: linear-gradient(135deg, #1DB954, #1ed760); color: white; border-left-color: #1DB954;">
-                <h3 style="color: white;">🎧 Connect to Juke Audio System</h3>
-                <p style="color: white; opacity: 0.9;">Control the house music from your device!</p>
-                
-                <div style="margin: 20px 0;">
-                    <button class="btn" onclick="connectSpotify()" style="background: #1DB954; border-bottom-color: #17a74a;">
-                        🎵 Connect Spotify
-                    </button>
-                    <button class="btn" onclick="showJukeInstructions()" style="background: #333; border-bottom-color: #1DB954;">
-                        📱 Juke Audio App
-                    </button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>🎶 Quick Setup Instructions</h3>
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                    <h4>Method 1: Spotify Connect (Recommended)</h4>
-                    <ol>
-                        <li>Open <strong>Spotify</strong> on your phone or tablet</li>
-                        <li>Play any song</li>
-                        <li>Tap the <strong>"Devices"</strong> icon at the bottom</li>
-                        <li>Select <strong>"Cape Coral Retreat Audio"</strong> from the list</li>
-                        <li>Music will now play through the house speakers!</li>
-                    </ol>
-                </div>
-                
-                <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                    <h4>Method 2: Juke Audio App</h4>
-                    <ol>
-                        <li>Download the <strong>"Juke Audio"</strong> app from App Store/Google Play</li>
-                        <li>Connect to the house WiFi: <strong id="music-wifi-name">CapeCoral_Retreat_Guest</strong></li>
-                        <li>Open Juke Audio app and select <strong>"Cape Coral Home"</strong></li>
-                        <li>Log in with your Spotify, Apple Music, or other streaming service</li>
-                        <li>Control volume and music from the app!</li>
-                    </ol>
-                </div>
-            </div>
-
-            <div class="card" style="border-left-color: #FF6B35;">
-                <h3>🔊 Audio Zones Available</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
-                    <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center;">
-                        <h4>🏠 Living Room</h4>
-                        <p>Main entertainment area</p>
-                        <button class="btn" onclick="selectZone('living')" style="font-size: 12px; padding: 6px 12px;">Select Zone</button>
-                    </div>
-                    <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center;">
-                        <h4>🏊‍♀️ Pool Area</h4>
-                        <p>Outdoor speakers</p>
-                        <button class="btn" onclick="selectZone('pool')" style="font-size: 12px; padding: 6px 12px;">Select Zone</button>
-                    </div>
-                    <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center;">
-                        <h4>🍳 Kitchen</h4>
-                        <p>Cooking & dining</p>
-                        <button class="btn" onclick="selectZone('kitchen')" style="font-size: 12px; padding: 6px 12px;">Select Zone</button>
-                    </div>
-                    <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center;">
-                        <h4>🏡 Whole House</h4>
-                        <p>All speakers</p>
-                        <button class="btn" onclick="selectZone('all')" style="font-size: 12px; padding: 6px 12px;">Select Zone</button>
-                    </div>
-                </div>
-                <div id="zone-selected" style="display: none; background: #d1fae5; padding: 10px; border-radius: 6px; margin: 10px 0; color: #065f46;">
-                    <strong>✅ Zone Selected:</strong> <span id="selected-zone"></span>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>🎵 Popular Playlists for Your Stay</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                    <div style="background: linear-gradient(135deg, #ff9a9e, #fecfef); padding: 15px; border-radius: 10px; cursor: pointer;" onclick="openPlaylist('tropical')">
-                        <h4>🌴 Tropical Vibes</h4>
-                        <p style="font-size: 14px;">Perfect for poolside relaxation</p>
-                    </div>
-                    <div style="background: linear-gradient(135deg, #a8edea, #fed6e3); padding: 15px; border-radius: 10px; cursor: pointer;" onclick="openPlaylist('chill')">
-                        <h4>😌 Chill Lounge</h4>
-                        <p style="font-size: 14px;">Relaxing background music</p>
-                    </div>
-                    <div style="background: linear-gradient(135deg, #ffecd2, #fcb69f); padding: 15px; border-radius: 10px; cursor: pointer;" onclick="openPlaylist('party')">
-                        <h4>🎉 Party Mix</h4>
-                        <p style="font-size: 14px;">Upbeat songs for entertaining</p>
-                    </div>
-                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px; border-radius: 10px; cursor: pointer;" onclick="openPlaylist('dinner')">
-                        <h4 style="color: white;">🍽️ Dinner Jazz</h4>
-                        <p style="font-size: 14px; color: white;">Sophisticated dining ambiance</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" style="background: linear-gradient(135deg, #FFF3CD, #FFF8DC); border-left-color: #856404;">
-                <h3>⚠️ Audio System Guidelines</h3>
-                <ul style="margin: 10px 0; padding-left: 20px;">
-                    <li><strong>Volume:</strong> Please keep volume at reasonable levels, especially after 10 PM</li>
-                    <li><strong>Pool Area:</strong> Outdoor speakers automatically turn off at 10 PM</li>
-                    <li><strong>Troubleshooting:</strong> If music stops, check WiFi connection and restart the app</li>
-                    <li><strong>Multiple Users:</strong> Only one device can control the system at a time</li>
-                    <li><strong>Support:</strong> Contact property manager if you need assistance</li>
-                </ul>
             </div>
         </div>
 
@@ -520,12 +395,12 @@
             </div>
         </div>
 
-        <!-- Admin Bookings -->
-        <div id="admin-bookings-page" style="display: none;">
-            <h2>📅 Booking Management</h2>
+        <!-- Admin Dashboard -->
+        <div id="admin-dashboard-page" style="display: none;">
+            <h2>📊 Admin Dashboard</h2>
             
             <div class="admin-card card">
-                <h3>Current Booking Details</h3>
+                <h3>Current Booking Management</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Guest Name</label>
@@ -539,198 +414,77 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Check-in Date</label>
-                        <input type="date" id="admin-checkin" value="2025-07-18" onchange="validateDates()">
+                        <input type="date" id="admin-checkin" value="2025-07-18">
                     </div>
                     <div class="form-group">
                         <label>Check-out Date</label>
-                        <input type="date" id="admin-checkout" value="2025-07-21" onchange="validateDates()">
-                        <div class="form-group">
-                            <input type="tel" id="cleaning-phone" placeholder="Phone Number" value="(239) 555-0199">
-                        </div>
+                        <input type="date" id="admin-checkout" value="2025-07-21">
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label>Schedule Cleaning After Check-out</label>
-                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                        <input type="date" id="cleaning-date" style="flex: 1; min-width: 150px;">
-                        <input type="time" id="cleaning-time" value="11:30" style="flex: 1; min-width: 120px;">
-                        <button class="btn" onclick="scheduleCleaningFromCheckout()">Auto-Schedule</button>
-                    </div>
-                    <p class="small-text">Auto-schedule will set cleaning 30 minutes after check-out time</p>
-                </div>
-
-                <div class="form-group">
-                    <label>Cleaning Checklist</label>
-                    <textarea id="cleaning-checklist" rows="8" style="width: 100%;">LIVING AREAS: ✓ Vacuum all carpets and rugs ✓ Mop all hard floors ✓ Dust all surfaces
-KITCHEN: ✓ Clean countertops ✓ Clean appliances ✓ Restock supplies
-BATHROOMS: ✓ Clean and disinfect ✓ Replace towels ✓ Restock supplies
-BEDROOMS: ✓ Fresh linens ✓ Vacuum floors ✓ Dust surfaces
-FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
-                </div>
-
                 <div class="form-row">
-                    <button class="btn btn-success" onclick="saveCleaningInfo()">Save Cleaning Details</button>
-                    <button class="btn" onclick="sendCleaningReminder()">Send Reminder to Cleaner</button>
+                    <div class="form-group">
+                        <label>Confirmation Code</label>
+                        <input type="text" id="admin-confirmation" value="ABC123">
+                    </div>
+                    <div class="form-group">
+                        <label>Door Code</label>
+                        <input type="text" id="admin-door-code" value="1234">
+                    </div>
                 </div>
+                <button class="btn btn-success" onclick="updateGuestInfo()">Update Guest Information</button>
             </div>
         </div>
 
-        <!-- Admin Property -->
-        <div id="admin-property-page" style="display: none;">
-            <h2>🏠 Property Management</h2>
+        <!-- Admin Settings -->
+        <div id="admin-settings-page" style="display: none;">
+            <h2>⚙️ Admin Settings</h2>
             
+            <div class="admin-card card">
+                <h3>WiFi Settings</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Network Name</label>
+                        <input type="text" id="admin-wifi-name" value="CapeCoral_Retreat_Guest">
+                    </div>
+                    <div class="form-group">
+                        <label>WiFi Password</label>
+                        <input type="text" id="admin-wifi-password" value="Tropical2025!">
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="updateWifiSettings()">Update WiFi Settings</button>
+            </div>
+
             <div class="admin-card card">
                 <h3>Property Information</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Property Name</label>
-                        <input type="text" id="admin-property-name" value="Cape Coral Home Retreat">
-                    </div>
-                    <div class="form-group">
-                        <label>Location</label>
-                        <input type="text" id="admin-property-location" value="123 SW 51st Terrace, Cape Coral, Florida">
-                    </div>
+                <div class="form-group">
+                    <label>Property Name</label>
+                    <input type="text" id="admin-property-name" value="Cape Coral Home Retreat">
+                </div>
+                <div class="form-group">
+                    <label>Property Address</label>
+                    <input type="text" id="admin-property-address" value="123 SW 51st Terrace, Cape Coral, Florida">
                 </div>
                 <button class="btn btn-success" onclick="updatePropertyInfo()">Update Property Info</button>
-            </div>
-
-            <div class="admin-card card">
-                <h3>Local Attractions Management</h3>
-                <div class="form-group">
-                    <label>Attractions (Format: Name | Type | Miles | Drive Time | Rating)</label>
-                    <textarea id="admin-attractions" rows="10" style="width: 100%;">Yacht Club Beach | Beach | 2.5 miles | 6 min drive | 4.5
-Cape Coral Beach at Four Freedoms Park | Beach | 3.2 miles | 8 min drive | 4.3
-The Lobster Lady | Restaurant | 4.8 miles | 12 min drive | 5.0
-Rotary Park Environmental Center | Nature | 5.1 miles | 12 min drive | 4.4
-Sun Splash Family Waterpark | Entertainment | 6.3 miles | 15 min drive | 4.1
-Cape Coral Farmers Market | Shopping | 4.2 miles | 10 min drive | 4.2
-Edison and Ford Winter Estates | Historical | 8.7 miles | 20 min drive | 4.6
-Seed to Table | Restaurant | 15.2 miles to Naples | 25 min drive | 5.0</textarea>
-                </div>
-                <button class="btn btn-success" onclick="updateAttractions()">Update Attractions</button>
-                <p class="small-text">Format each line as: Name | Type | Miles | Drive Time | Rating</p>
-            </div>
-        </div>
-
-        <!-- Admin Integrations -->
-        <div id="admin-integrations-page" style="display: none;">
-            <h2>🔗 Platform Integrations</h2>
-            
-            <div class="integration-section">
-                <h3>🏠 Airbnb Integration</h3>
-                <div class="alert-info">
-                    <strong>Important:</strong> Airbnb doesn't provide direct API access for hosts. You'll need to use a Property Management System (PMS) as a bridge.
-                </div>
-                
-                <h4>Recommended PMS Options:</h4>
-                <div class="stats-grid">
-                    <div class="card">
-                        <h4>Hostfully</h4>
-                        <p class="small-text">Syncs with Airbnb, VRBO, and provides API access for custom integrations.</p>
-                        <button class="btn" onclick="window.open('https://hostfully.com', '_blank')">Learn More</button>
-                    </div>
-                    <div class="card">
-                        <h4>Guesty</h4>
-                        <p class="small-text">Multi-platform management with webhook support for real-time updates.</p>
-                        <button class="btn" onclick="window.open('https://guesty.com', '_blank')">Learn More</button>
-                    </div>
-                    <div class="card">
-                        <h4>OwnerRez</h4>
-                        <p class="small-text">Direct booking system with Airbnb sync and API access.</p>
-                        <button class="btn" onclick="window.open('https://ownerrez.com', '_blank')">Learn More</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Admin Data -->
-        <div id="admin-data-page" style="display: none;">
-            <h2>💾 Data Management</h2>
-            
-            <div class="admin-card card">
-                <h3>📤 Export Data</h3>
-                <p>Download all property data as backup</p>
-                <button class="btn" onclick="exportData()">Export Property Data</button>
-            </div>
-
-            <div class="admin-card card">
-                <h3>📥 Import Data</h3>
-                <p>Upload property data from backup</p>
-                <div class="form-group">
-                    <textarea id="import-data" rows="10" placeholder="Paste JSON data here..."></textarea>
-                </div>
-                <button class="btn btn-success" onclick="importData()">Import Data</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Property data stored in localStorage for persistence
-        let propertyData = {
+        // Guest data
+        let guestData = {
             guestName: 'John & Sarah Smith',
+            checkIn: 'July 18, 2025',
+            checkOut: 'July 21, 2025',
             guestCount: 4,
-            checkIn: '2025-07-18',
-            checkOut: '2025-07-21',
             confirmation: 'ABC123',
             doorCode: '1234',
             wifiName: 'CapeCoral_Retreat_Guest',
-            wifiPassword: 'Tropical2025!',
-            propertyName: 'Cape Coral Home Retreat',
-            propertyLocation: '123 SW 51st Terrace, Cape Coral, Florida',
-            primaryColor: '#00B4D8',
-            accentColor: '#F77F00'
+            wifiPassword: 'Tropical2025!'
         };
-
-        // Load saved data on page load
-        function loadData() {
-            try {
-                const saved = localStorage.getItem('capeCoralData');
-                if (saved) {
-                    propertyData = { ...propertyData, ...JSON.parse(saved) };
-                }
-            } catch (error) {
-                console.log('No saved data found, using defaults');
-            }
-            updateDisplays();
-        }
-
-        // Save data to localStorage
-        function saveData() {
-            try {
-                localStorage.setItem('capeCoralData', JSON.stringify(propertyData));
-            } catch (error) {
-                console.log('Could not save data');
-            }
-        }
-
-        // Update all display elements
-        function updateDisplays() {
-            const elements = [
-                { id: 'display-guest-name', value: propertyData.guestName },
-                { id: 'display-checkin', value: propertyData.checkIn },
-                { id: 'display-checkout', value: propertyData.checkOut },
-                { id: 'display-guest-count', value: propertyData.guestCount },
-                { id: 'display-confirmation', value: propertyData.confirmation },
-                { id: 'display-door-code', value: propertyData.doorCode },
-                { id: 'display-wifi-name', value: propertyData.wifiName },
-                { id: 'display-wifi-password', value: propertyData.wifiPassword },
-                { id: 'access-door-code', value: propertyData.doorCode },
-                { id: 'access-wifi-name', value: propertyData.wifiName },
-                { id: 'access-wifi-password', value: propertyData.wifiPassword },
-                { id: 'music-wifi-name', value: propertyData.wifiName }
-            ];
-
-            elements.forEach(element => {
-                const el = document.getElementById(element.id);
-                if (el) el.textContent = element.value;
-            });
-        }
 
         function showPage(pageId, buttonElement) {
             // Hide all pages
-            const pages = ['home', 'access', 'attractions', 'music', 'rules', 'emergency', 'admin-login', 
-                          'admin-bookings', 'admin-property', 'admin-integrations', 'admin-data'];
+            const pages = ['home', 'access', 'attractions', 'rules', 'emergency', 'admin-login', 'admin-dashboard', 'admin-settings'];
             pages.forEach(page => {
                 const element = document.getElementById(page + '-page');
                 if (element) element.style.display = 'none';
@@ -755,9 +509,10 @@ Seed to Table | Restaurant | 15.2 miles to Naples | 25 min drive | 5.0</textarea
             if (password === 'admin1128') {
                 document.getElementById('guest-nav').style.display = 'none';
                 document.getElementById('admin-nav').style.display = 'flex';
-                showPage('admin-bookings');
+                showPage('admin-dashboard');
                 loadAdminData();
                 document.getElementById('admin-password').value = '';
+                showAlert('Admin access granted', 'success');
             } else {
                 showAlert('Invalid password', 'error');
             }
@@ -767,222 +522,61 @@ Seed to Table | Restaurant | 15.2 miles to Naples | 25 min drive | 5.0</textarea
             document.getElementById('guest-nav').style.display = 'flex';
             document.getElementById('admin-nav').style.display = 'none';
             showPage('home');
+            showAlert('Logged out successfully', 'info');
         }
 
         function loadAdminData() {
-            const adminFields = [
-                { id: 'admin-guest-name', value: propertyData.guestName },
-                { id: 'admin-guest-count', value: propertyData.guestCount },
-                { id: 'admin-checkin', value: propertyData.checkIn },
-                { id: 'admin-checkout', value: propertyData.checkOut },
-                { id: 'admin-confirmation', value: propertyData.confirmation },
-                { id: 'admin-door-code', value: propertyData.doorCode },
-                { id: 'admin-wifi-name', value: propertyData.wifiName },
-                { id: 'admin-wifi-password', value: propertyData.wifiPassword },
-                { id: 'admin-property-name', value: propertyData.propertyName || 'Cape Coral Home Retreat' },
-                { id: 'admin-property-location', value: propertyData.propertyLocation || '123 SW 51st Terrace, Cape Coral, Florida' }
-            ];
-
-            adminFields.forEach(field => {
-                const el = document.getElementById(field.id);
-                if (el) el.value = field.value;
-            });
+            document.getElementById('admin-guest-name').value = guestData.guestName;
+            document.getElementById('admin-guest-count').value = guestData.guestCount;
+            document.getElementById('admin-checkin').value = '2025-07-18';
+            document.getElementById('admin-checkout').value = '2025-07-21';
+            document.getElementById('admin-confirmation').value = guestData.confirmation;
+            document.getElementById('admin-door-code').value = guestData.doorCode;
+            document.getElementById('admin-wifi-name').value = guestData.wifiName;
+            document.getElementById('admin-wifi-password').value = guestData.wifiPassword;
         }
 
-        function validateDates() {
-            const checkIn = new Date(document.getElementById('admin-checkin').value);
-            const checkOut = new Date(document.getElementById('admin-checkout').value);
-            const errorDiv = document.getElementById('date-error');
-            const updateBtn = document.getElementById('update-booking-btn');
+        function updateGuestInfo() {
+            guestData.guestName = document.getElementById('admin-guest-name').value;
+            guestData.guestCount = document.getElementById('admin-guest-count').value;
+            guestData.confirmation = document.getElementById('admin-confirmation').value;
+            guestData.doorCode = document.getElementById('admin-door-code').value;
             
-            const nextDay = new Date(checkIn);
-            nextDay.setDate(nextDay.getDate() + 1);
-            
-            if (checkOut < nextDay) {
-                errorDiv.style.display = 'block';
-                updateBtn.disabled = true;
-                return false;
-            } else {
-                errorDiv.style.display = 'none';
-                updateBtn.disabled = false;
-                return true;
-            }
-        }
-
-        function updateBooking() {
-            if (!validateDates()) return;
-            
-            propertyData.guestName = document.getElementById('admin-guest-name').value;
-            propertyData.guestCount = parseInt(document.getElementById('admin-guest-count').value);
-            propertyData.checkIn = document.getElementById('admin-checkin').value;
-            propertyData.checkOut = document.getElementById('admin-checkout').value;
-            propertyData.confirmation = document.getElementById('admin-confirmation').value;
-            propertyData.doorCode = document.getElementById('admin-door-code').value;
-            
-            saveData();
             updateDisplays();
-            showAlert('Booking information updated successfully!', 'success');
+            showAlert('Guest information updated successfully!', 'success');
         }
 
-        function updateWifi() {
-            propertyData.wifiName = document.getElementById('admin-wifi-name').value;
-            propertyData.wifiPassword = document.getElementById('admin-wifi-password').value;
+        function updateWifiSettings() {
+            guestData.wifiName = document.getElementById('admin-wifi-name').value;
+            guestData.wifiPassword = document.getElementById('admin-wifi-password').value;
             
-            saveData();
             updateDisplays();
-            showAlert('WiFi information updated successfully!', 'success');
+            showAlert('WiFi settings updated successfully!', 'success');
         }
 
         function updatePropertyInfo() {
-            propertyData.propertyName = document.getElementById('admin-property-name').value;
-            propertyData.propertyLocation = document.getElementById('admin-property-location').value;
+            const propertyName = document.getElementById('admin-property-name').value;
+            const propertyAddress = document.getElementById('admin-property-address').value;
             
-            // Update the header display immediately
-            document.querySelector('.nav h1').textContent = '🏖️ ' + propertyData.propertyName;
-            document.querySelector('.nav p').textContent = propertyData.propertyLocation;
+            document.querySelector('.nav h1').textContent = '🏖️ ' + propertyName;
+            document.querySelector('.nav p').textContent = propertyAddress;
             
-            saveData();
             showAlert('Property information updated successfully!', 'success');
         }
 
-        function updateAttractions() {
-            const attractions = document.getElementById('admin-attractions').value;
-            propertyData.attractions = attractions;
-            saveData();
-            showAlert('Attractions updated successfully!', 'success');
-        }
-
-        function scheduleCleaningFromCheckout() {
-            const checkOutDate = document.getElementById('admin-checkout').value;
-            if (checkOutDate) {
-                document.getElementById('cleaning-date').value = checkOutDate;
-                document.getElementById('cleaning-time').value = '11:30';
-                showAlert('Cleaning automatically scheduled for 30 minutes after checkout!', 'success');
-            } else {
-                showAlert('Please set a check-out date first', 'error');
-            }
-        }
-
-        function saveCleaningInfo() {
-            propertyData.cleaningCompany = document.getElementById('cleaning-company').value;
-            propertyData.cleaningPhone = document.getElementById('cleaning-phone').value;
-            propertyData.cleaningDate = document.getElementById('cleaning-date').value;
-            propertyData.cleaningTime = document.getElementById('cleaning-time').value;
-            propertyData.cleaningChecklist = document.getElementById('cleaning-checklist').value;
-            
-            saveData();
-            showAlert('Cleaning information saved successfully!', 'success');
-        }
-
-        function sendCleaningReminder() {
-            const company = document.getElementById('cleaning-company').value;
-            const phone = document.getElementById('cleaning-phone').value;
-            const date = document.getElementById('cleaning-date').value;
-            const time = document.getElementById('cleaning-time').value;
-            
-            if (company && phone && date && time) {
-                // Format the date nicely
-                const formattedDate = new Date(date).toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-                
-                // Create detailed message
-                const message = `Hi ${company}! 
-
-Cleaning reminder for Cape Coral Home Retreat:
-📅 Date: ${formattedDate}
-⏰ Time: ${time}
-🏠 Address: 123 SW 51st Terrace, Cape Coral, FL
-
-Please confirm you can make this appointment. Thanks!`;
-                
-                // Clean phone number (remove non-digits)
-                const cleanPhone = phone.replace(/\D/g, '');
-                
-                // Create SMS link
-                const smsLink = `sms:+1${cleanPhone}?body=${encodeURIComponent(message)}`;
-                
-                // Check if we're on mobile/tablet
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                
-                if (isMobile) {
-                    // On mobile - open SMS app directly
-                    window.location.href = smsLink;
-                    showAlert('Opening SMS app to send reminder...', 'success');
-                } else {
-                    // On desktop - show instructions
-                    const instructionWindow = window.open('', 'SMS Instructions', 'width=500,height=400');
-                    instructionWindow.document.write(`
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <title>Send SMS Reminder</title>
-                            <style>
-                                body { font-family: Arial, sans-serif; padding: 20px; }
-                                .message-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; white-space: pre-line; }
-                                .phone { font-size: 18px; font-weight: bold; color: #00B4D8; }
-                                .copy-btn { background: #00B4D8; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 5px; }
-                            </style>
-                        </head>
-                        <body>
-                            <h2>📱 Send SMS Reminder</h2>
-                            <p><strong>Send to:</strong> <span class="phone">${phone}</span></p>
-                            
-                            <h3>Message:</h3>
-                            <div class="message-box">${message}</div>
-                            
-                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${message}'); alert('Message copied!')">📋 Copy Message</button>
-                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${cleanPhone}'); alert('Phone number copied!')">📞 Copy Phone</button>
-                            <button class="copy-btn" onclick="window.close()">❌ Close</button>
-                            
-                            <p><strong>Instructions:</strong></p>
-                            <ol>
-                                <li>Copy the message and phone number using the buttons above</li>
-                                <li>Open your phone's messaging app</li>
-                                <li>Create a new message to the copied phone number</li>
-                                <li>Paste the copied message</li>
-                                <li>Send!</li>
-                            </ol>
-                        </body>
-                        </html>
-                    `);
-                    showAlert('SMS reminder window opened with message and phone number', 'info');
-                }
-            } else {
-                showAlert('Please fill in cleaning company, phone number, date, and time first', 'error');
-            }
-        }
-
-        function exportData() {
-            const dataStr = JSON.stringify(propertyData, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'cape-coral-data.json';
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function importData() {
-            try {
-                const data = JSON.parse(document.getElementById('import-data').value);
-                propertyData = { ...propertyData, ...data };
-                saveData();
-                updateDisplays();
-                loadAdminData();
-                showAlert('Data imported successfully!', 'success');
-                document.getElementById('import-data').value = '';
-            } catch (error) {
-                showAlert('Invalid JSON format', 'error');
-            }
+        function updateDisplays() {
+            document.getElementById('display-guest-name').textContent = guestData.guestName;
+            document.getElementById('display-guest-count').textContent = guestData.guestCount;
+            document.getElementById('display-confirmation').textContent = guestData.confirmation;
+            document.getElementById('display-door-code').textContent = guestData.doorCode;
+            document.getElementById('display-wifi-name').textContent = guestData.wifiName;
+            document.getElementById('display-wifi-password').textContent = guestData.wifiPassword;
+            document.getElementById('access-door-code').textContent = guestData.doorCode;
+            document.getElementById('access-wifi-name').textContent = guestData.wifiName;
+            document.getElementById('access-wifi-password').textContent = guestData.wifiPassword;
         }
 
         function showAlert(message, type) {
-            // Create a non-modal notification
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
             alertDiv.textContent = message;
@@ -1003,123 +597,9 @@ Please confirm you can make this appointment. Thanks!`;
             }, 4000);
         }
 
-        // Music/Audio System Functions
-        function connectSpotify() {
-            // Check if we're on mobile/tablet
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                // Try to open Spotify app directly
-                const spotifyAppURL = 'spotify://';
-                const spotifyWebURL = 'https://open.spotify.com';
-                
-                // Create a hidden iframe to attempt app launch
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = spotifyAppURL;
-                document.body.appendChild(iframe);
-                
-                // Fallback to web version after a short delay
-                setTimeout(() => {
-                    document.body.removeChild(iframe);
-                    window.open(spotifyWebURL, '_blank');
-                }, 1000);
-                
-                showAlert('Opening Spotify... Look for "Cape Coral Retreat Audio" in your devices list!', 'success');
-            } else {
-                // Desktop - open Spotify Web Player
-                window.open('https://open.spotify.com', '_blank');
-                showAlert('Spotify opened! Look for "Cape Coral Retreat Audio" in the devices list at the bottom of the player.', 'info');
-            }
-        }
-
-        function showJukeInstructions() {
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            const isAndroid = /Android/.test(navigator.userAgent);
-            
-            let appStoreURL;
-            if (isIOS) {
-                appStoreURL = 'https://apps.apple.com/search?term=juke%20audio';
-            } else if (isAndroid) {
-                appStoreURL = 'https://play.google.com/store/search?q=juke%20audio';
-            } else {
-                appStoreURL = 'https://jukeaudio.com/download';
-            }
-            
-            window.open(appStoreURL, '_blank');
-            showAlert('Download the Juke Audio app to control the house sound system directly!', 'info');
-        }
-
-        function selectZone(zone) {
-            const zones = {
-                'living': 'Living Room',
-                'pool': 'Pool Area',
-                'kitchen': 'Kitchen',
-                'all': 'Whole House'
-            };
-            
-            document.getElementById('selected-zone').textContent = zones[zone];
-            document.getElementById('zone-selected').style.display = 'block';
-            
-            // Simulate zone selection (in real implementation, this would send command to Juke system)
-            showAlert(`Audio zone set to: ${zones[zone]}`, 'success');
-            
-            // Hide the notification after showing the selected zone
-            setTimeout(() => {
-                document.getElementById('zone-selected').style.display = 'none';
-            }, 5000);
-        }
-
-        function openPlaylist(type) {
-            const playlists = {
-                'tropical': 'https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd', // Tropical House Cruises
-                'chill': 'https://open.spotify.com/playlist/37i9dQZF1DWS1zOdTE8uo8', // Chill Lofi Study Beats
-                'party': 'https://open.spotify.com/playlist/37i9dQZF1DX0XUfTFmNBRM', // Feel Good Indie Rock
-                'dinner': 'https://open.spotify.com/playlist/37i9dQZF1DX0SM0LYsmbMT' // Dinner Music
-            };
-            
-            const playlistNames = {
-                'tropical': 'Tropical Vibes',
-                'chill': 'Chill Lounge',
-                'party': 'Party Mix',
-                'dinner': 'Dinner Jazz'
-            };
-            
-            // Try to open Spotify app first on mobile
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                // Convert web URL to app URL
-                const appURL = playlists[type].replace('https://open.spotify.com', 'spotify:');
-                
-                // Try app first, fallback to web
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = appURL;
-                document.body.appendChild(iframe);
-                
-                setTimeout(() => {
-                    document.body.removeChild(iframe);
-                    window.open(playlists[type], '_blank');
-                }, 1000);
-            } else {
-                window.open(playlists[type], '_blank');
-            }
-            
-            showAlert(`Opening ${playlistNames[type]} playlist! Remember to select "Cape Coral Retreat Audio" as your device.`, 'success');
-        }
-
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            
-            // Check for admin access parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('admin') === 'true') {
-                document.getElementById('admin-btn').style.display = 'inline-block';
-            }
-            
-            // Secret key combination to show admin button (Ctrl+Shift+A)
+            // Improved admin toggle with Ctrl+Shift+A
             document.addEventListener('keydown', function(e) {
                 if (e.ctrlKey && e.shiftKey && e.key === 'A') {
                     const adminBtn = document.getElementById('admin-btn');
@@ -1138,17 +618,6 @@ Please confirm you can make this appointment. Thanks!`;
                 }
             });
             
-            // Secret click sequence on property name (triple click)
-            let clickCount = 0;
-            document.querySelector('.nav h1').addEventListener('click', function() {
-                clickCount++;
-                if (clickCount === 3) {
-                    document.getElementById('admin-btn').style.display = 'inline-block';
-                    clickCount = 0;
-                }
-                setTimeout(() => clickCount = 0, 2000);
-            });
-            
             showPage('home');
             const firstBtn = document.querySelector('.btn');
             if (firstBtn) firstBtn.classList.add('active');
@@ -1165,46 +634,4 @@ Please confirm you can make this appointment. Thanks!`;
         document.head.appendChild(style);
     </script>
 </body>
-</html> id="date-error" class="alert-error" style="display: none; margin-top: 8px; padding: 10px; border-radius: 6px;">
-                            Check-out must be at least 1 day after check-in
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Confirmation Code</label>
-                        <input type="text" id="admin-confirmation" value="ABC123">
-                    </div>
-                    <div class="form-group">
-                        <label>Door Code</label>
-                        <input type="text" id="admin-door-code" value="1234">
-                    </div>
-                </div>
-                <button class="btn btn-success" id="update-booking-btn" onclick="updateBooking()">Update Booking Info</button>
-            </div>
-
-            <div class="admin-card card">
-                <h3>WiFi Settings</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Network Name</label>
-                        <input type="text" id="admin-wifi-name" value="CapeCoral_Retreat_Guest">
-                    </div>
-                    <div class="form-group">
-                        <label>WiFi Password</label>
-                        <input type="text" id="admin-wifi-password" value="Tropical2025!">
-                    </div>
-                </div>
-                <button class="btn btn-success" onclick="updateWifi()">Update WiFi Info</button>
-            </div>
-
-            <div class="admin-card card">
-                <h3>Cleaning Schedule & Management</h3>
-                
-                <div class="form-group">
-                    <label>Cleaning Company Contact</label>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <input type="text" id="cleaning-company" placeholder="Company Name" value="Cape Coral Cleaning Services">
-                        </div>
-                        <div
+</html>
