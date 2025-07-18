@@ -3,83 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cape Coral Home Retreat - Test</title>
+    <title>Cape Coral Home Retreat - Debug</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background: linear-gradient(135deg, #00B4D8, #F77F00);
-            color: white;
-            min-height: 100vh;
+            background: #F0F9FF;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .card {
+        .nav {
             background: white;
-            color: #333;
-            padding: 30px;
-            border-radius: 15px;
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #00B4D8;
         }
-        .button {
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #F77F00;
+        }
+        .btn {
             background: #00B4D8;
             color: white;
-            padding: 15px 30px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 5px;
+            margin: 5px;
             cursor: pointer;
-            margin: 10px;
             border-bottom: 3px solid #F77F00;
         }
-        .button:hover {
+        .btn:hover {
             background: #0096b8;
+        }
+        .btn.active {
+            background: #0096b8;
+        }
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #00B4D8;
+        }
+        .emergency-card {
+            background: #fff5f5;
+            border-left: 4px solid #ef4444;
+        }
+        .attraction-card {
+            background: #fffbeb;
+            border-left: 4px solid #F77F00;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .phone-link {
+            color: #00B4D8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .phone-link:hover {
+            color: #0096b8;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="nav">
         <h1>🏖️ Cape Coral Home Retreat</h1>
-        <p>Your Tropical Paradise in Cape Coral, Florida</p>
-        
-        <div class="card">
-            <h2>Welcome!</h2>
-            <p>This is a test page to make sure GitHub Pages is working.</p>
-            <p>If you can see this, your hosting is set up correctly!</p>
+        <p>Cape Coral, Florida</p>
+        <div>
+            <button class="btn active" onclick="showPage('home', this)">🏠 Welcome</button>
+            <button class="btn" onclick="showPage('access', this)">🔑 Access Info</button>
+            <button class="btn" onclick="showPage('attractions', this)">📍 Attractions</button>
+            <button class="btn" onclick="showPage('rules', this)">📋 Rules</button>
+            <button class="btn" onclick="showPage('emergency', this)">📞 Emergency</button>
         </div>
-        
-        <div class="card">
-            <h3>📋 Quick Info</h3>
-            <p><strong>Property:</strong> Cape Coral Home Retreat</p>
-            <p><strong>Location:</strong> Cape Coral, Florida</p>
-            <p><strong>WiFi:</strong> CapeCoral_Retreat_Guest</p>
-            <p><strong>Password:</strong> Tropical2025!</p>
-        </div>
-        
-        <div class="card">
-            <h3>🏖️ Local Attractions</h3>
-            <p>• Yacht Club Beach (6 min)</p>
-            <p>• Cape Coral Beach at Four Freedoms Park (8 min)</p>
-            <p>• Rotary Park Environmental Center (12 min)</p>
-            <p>• Sun Splash Family Waterpark (15 min)</p>
-        </div>
-        
-        <div class="card">
-            <h3>📞 Emergency Contacts</h3>
-            <p><strong>Property Manager:</strong> <a href="tel:+12395741234">(239) 574-1234</a></p>
-            <p><strong>Emergency Services:</strong> <a href="tel:911">911</a></p>
-            <p><strong>Cape Coral Police:</strong> <a href="tel:+12395743223">(239) 574-3223</a></p>
-        </div>
-        
-        <button class="button" onclick="alert('Full app coming soon!')">
-            🚀 Launch Full App (Coming Soon)
-        </button>
     </div>
+
+    <div class="content">
+        <!-- Home Page -->
+        <div id="home-page">
+            <div style="background: #00B4D8; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-bottom: 4px solid #F77F00;">
+                <h2>Welcome to Cape Coral Home Retreat!</h2>
+                <p>Your tropical paradise awaits in beautiful Cape Coral, Florida!</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                <div class="card">
+                    <h3>📅 Current Booking</h3>
+                    <p><strong>Guest:</strong> John & Sarah Smith</p>
+                    <p><strong>Check-in:</strong> 2025-07-18</p>
+                    <p><strong>Check-out:</strong> 2025-07-21</p>
+                    <p><strong>Guests:</strong> 4</p>
+                    <p><strong>Confirmation:</strong> ABC123</p>
+                </div>
+                
+                <div class="card" style="border-left-color: #F77F00;">
+                    <h3>🔑 Access Information</h3>
+                    <p><strong>Door Code:</strong> 1234</p>
+                    <p><strong>WiFi:</strong> CapeCoral_Retreat_Guest</p>
+                    <p><strong>Password:</strong> Tropical2025!</p>
+                    <p style="font-size: 14px; color: #666;">Please keep this information secure</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Page -->
+        <div id="access-page" style="display: none;">
+            <h2>🔑 Access Information</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="card" style="background: #dbeafe; border-left-color: #2563eb;">
+                    <h3>Door Access</h3>
+                    <p style="font-size: 36px; font-weight: bold; color: #2563eb; margin: 10px 0;">1234</p>
+                    <p>Enter this code on the front door keypad</p>
+                </div>
+                
+                <div class="card" style="background: #dcfce7; border-left-color: #16a34a;">
+                    <h3>WiFi Network</h3>
+                    <p style="font-weight: bold; color: #16a34a;">CapeCoral_Retreat_Guest</p>
+                    <p style="font-weight: bold; color: #16a34a;">Tropical2025!</p>
+                    <p>Connect your devices to stay online</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attractions Page -->
+        <div id="attractions-page" style="display: none;">
+            <h2>📍 Local Attractions</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="attraction-card">
+                    <h3>Yacht Club Beach</h3>
+                    <p>Beach • 6 min drive • ⭐ 4.5</p>
+                </div>
+                <div class="attraction-card">
+                    <h3>Cape Coral Beach at Four Freedoms Park</h3>
+                    <p>Beach • 8 min drive • ⭐ 4.3</p>
+                </div>
+                <div class="attraction-card">
+                    <h3>Rotary Park Environmental Center</h3>
+                    <p>Nature • 12 min drive • ⭐ 4.4</p>
+                </div>
+                <div class="attraction-card">
+                    <h3>Sun Splash Family Waterpark</h3>
+                    <p>Entertainment • 15 min drive • ⭐ 4.1</p>
+                </div>
+                <div class="attraction-card">
+                    <h3>Cape Coral Farmers Market</h3>
+                    <p>Shopping • 10 min drive • ⭐ 4.2</p>
+                </div>
+                <div class="attraction-card">
+                    <h3>Edison and Ford Winter Estates</h3>
+                    <p>Historical • 20 min drive • ⭐ 4.6</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rules Page -->
+        <div id="rules-page" style="display: none;">
+            <h2>📋 Property Rules & Guidelines</h2>
+            <div class="card">
+                <p>✅ Check-in: 4:00 PM - 9:00 PM (Please contact us if arriving after 9 PM)</p>
+            </div>
+            <div class="card">
+                <p>✅ Check-out: 11:00 AM (Late check-out available upon request)</p>
+            </div>
+            <div class="card">
+                <p>✅ No smoking anywhere on the property (including lanai and pool area)</p>
+            </div>
+            <div class="card">
+                <p>✅ Maximum occupancy: 6 guests</p>
+            </div>
+            <div class="card">
+                <p>✅ Quiet hours: 10:00 PM - 8:00 AM (Respect our neighbors)</p>
+            </div>
+            <div class="card">
+                <p>✅ Pool hours: 8:00 AM - 10:00 PM</p>
+            </div>
+            <div class="card">
+                <p>✅ No glass containers in pool area</p>
+            </div>
+            <div class="card">
+                <p>✅ Please rinse off before entering pool after beach visits</p>
+            </div>
+            <div class="card">
+                <p>✅ Parking: Maximum 2 vehicles in driveway</p>
+            </div>
+            <div class="card">
+                <p>✅ No pets allowed (service animals welcome with prior notice)</p>
+            </div>
+        </div>
+
+        <!-- Emergency Page -->
+        <div id="emergency-page" style="display: none;">
+            <h2>📞 Emergency Contacts</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="emergency-card">
+                    <h3>Property Manager</h3>
+                    <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">
+                        <a href="tel:+12395741234" class="phone-link">(239) 574-1234</a>
+                    </p>
+                </div>
+                <div class="emergency-card">
+                    <h3>Emergency Services</h3>
+                    <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">
+                        <a href="tel:911" class="phone-link">911</a>
+                    </p>
+                </div>
+                <div class="emergency-card">
+                    <h3>Cape Coral Police</h3>
+                    <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">
+                        <a href="tel:+12395743223" class="phone-link">(239) 574-3223</a>
+                    </p>
+                </div>
+                <div class="emergency-card">
+                    <h3>Lee Memorial Hospital</h3>
+                    <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">
+                        <a href="tel:+12393432000" class="phone-link">(239) 343-2000</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId, buttonElement) {
+            // Hide all pages
+            const pages = ['home-page', 'access-page', 'attractions-page', 'rules-page', 'emergency-page'];
+            pages.forEach(page => {
+                document.getElementById(page).style.display = 'none';
+            });
+            
+            // Show selected page
+            document.getElementById(pageId + '-page').style.display = 'block';
+            
+            // Update button states
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+        }
+        
+        // Show home page by default
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+            document.querySelector('.btn').classList.add('active');
+        });
+    </script>
 </body>
 </html>
