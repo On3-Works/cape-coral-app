@@ -212,6 +212,7 @@
             <button class="btn active" onclick="showPage('home', this)">🏠 Welcome</button>
             <button class="btn" onclick="showPage('access', this)">🔑 Access Info</button>
             <button class="btn" onclick="showPage('attractions', this)">📍 Attractions</button>
+            <button class="btn" onclick="showPage('music', this)">🎵 Music</button>
             <button class="btn" onclick="showPage('rules', this)">📋 Rules</button>
             <button class="btn" onclick="showPage('emergency', this)">📞 Emergency</button>
             <button class="btn" id="admin-btn" onclick="showPage('admin-login', this)" style="display: none;">⚙️ Admin</button>
@@ -309,6 +310,111 @@
             </div>
         </div>
 
+        <!-- Music/Spotify Page -->
+        <div id="music-page" style="display: none;">
+            <h2>🎵 Home Audio System</h2>
+            
+            <div class="card" style="background: linear-gradient(135deg, #1DB954, #1ed760); color: white; border-left-color: #1DB954;">
+                <h3 style="color: white;">🎧 Connect to House Speakers</h3>
+                <p style="color: white; opacity: 0.9;">Control the house music from your device!</p>
+                
+                <div style="margin: 20px 0;">
+                    <button class="btn" onclick="connectSpotify()" style="background: #1DB954; border-bottom-color: #17a74a;">
+                        🎵 Open Spotify
+                    </button>
+                    <button class="btn" onclick="showMusicInstructions()" style="background: #333; border-bottom-color: #1DB954;">
+                        📱 How to Connect
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎶 Quick Setup Instructions</h3>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <h4>Method 1: Spotify Connect (Recommended)</h4>
+                    <ol>
+                        <li>Open <strong>Spotify</strong> on your phone or tablet</li>
+                        <li>Play any song</li>
+                        <li>Tap the <strong>"Devices"</strong> icon at the bottom</li>
+                        <li>Select <strong>"Cape Coral Retreat Audio"</strong> from the list</li>
+                        <li>Music will now play through the house speakers!</li>
+                    </ol>
+                </div>
+                
+                <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <h4>Method 2: Direct Connection</h4>
+                    <ol>
+                        <li>Connect to the house WiFi: <strong><span id="music-wifi-name">CapeCoral_Retreat_Guest</span></strong></li>
+                        <li>Open your music app (Spotify, Apple Music, etc.)</li>
+                        <li>Look for <strong>"Cape Coral Home"</strong> in available speakers</li>
+                        <li>Select it and enjoy your music throughout the house!</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card" style="border-left-color: #FF6B35;">
+                <h3>🔊 Audio Zones Available</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
+                    <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>🏠 Living Room</h4>
+                        <p>Main entertainment area</p>
+                        <button class="btn" onclick="selectZone('living')" style="font-size: 12px; padding: 6px 12px;">Select Zone</button>
+                    </div>
+                    <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>🏊‍♀️ Pool Area</h4>
+                        <p>Outdoor speakers</p>
+                        <button class="btn" onclick="selectZone('pool')" style="font-size: 12px; padding: 6px 12px;">Select Zone</button>
+                    </div>
+                    <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>🍳 Kitchen</h4>
+                        <p>Cooking & dining</p>
+                        <button class="btn" onclick="selectZone('kitchen')" style="font-size: 12px; padding: 6px 12px;">Select Zone</button>
+                    </div>
+                    <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4>🏡 Whole House</h4>
+                        <p>All speakers</p>
+                        <button class="btn" onclick="selectZone('all')" style="font-size: 12px; padding: 6px 12px;">Select Zone</button>
+                    </div>
+                </div>
+                <div id="zone-selected" style="display: none; background: #d1fae5; padding: 10px; border-radius: 6px; margin: 10px 0; color: #065f46;">
+                    <strong>✅ Zone Selected:</strong> <span id="selected-zone"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎵 Suggested Playlists for Your Stay</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <div style="background: linear-gradient(135deg, #ff9a9e, #fecfef); padding: 15px; border-radius: 10px; cursor: pointer;" onclick="openPlaylist('tropical')">
+                        <h4>🌴 Tropical Vibes</h4>
+                        <p style="font-size: 14px;">Perfect for poolside relaxation</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #a8edea, #fed6e3); padding: 15px; border-radius: 10px; cursor: pointer;" onclick="openPlaylist('chill')">
+                        <h4>😌 Chill Lounge</h4>
+                        <p style="font-size: 14px;">Relaxing background music</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #ffecd2, #fcb69f); padding: 15px; border-radius: 10px; cursor: pointer;" onclick="openPlaylist('party')">
+                        <h4>🎉 Party Mix</h4>
+                        <p style="font-size: 14px;">Upbeat songs for entertaining</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px; border-radius: 10px; cursor: pointer;" onclick="openPlaylist('dinner')">
+                        <h4 style="color: white;">🍽️ Dinner Jazz</h4>
+                        <p style="font-size: 14px; color: white;">Sophisticated dining ambiance</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="background: linear-gradient(135deg, #FFF3CD, #FFF8DC); border-left-color: #856404;">
+                <h3>⚠️ Audio System Guidelines</h3>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Volume:</strong> Please keep volume at reasonable levels, especially after 10 PM</li>
+                    <li><strong>Pool Area:</strong> Outdoor speakers automatically turn off at 10 PM</li>
+                    <li><strong>Troubleshooting:</strong> If music stops, check WiFi connection and restart the app</li>
+                    <li><strong>Multiple Users:</strong> Only one device can control the system at a time</li>
+                    <li><strong>Support:</strong> Contact property manager if you need assistance</li>
+                </ul>
+            </div>
+        </div>
+
         <!-- Rules Page -->
         <div id="rules-page" style="display: none;">
             <h2>📋 Property Rules & Guidelines</h2>
@@ -346,7 +452,8 @@
                 <p>✅ No pets allowed (service animals welcome with prior notice)</p>
             </div>
             <div class="card">
-                <p>✅ Please dispose of trash in provided bins - pickup is Wednesday</p>
+                <p>✅ Please dispose of trash in provided bins - pickup is Monday morning</p>
+                <p class="small-text">Trash bins are located on the right side of house next to AC units. Please take to curb Sunday evening.</p>
             </div>
         </div>
 
@@ -455,6 +562,81 @@
             </div>
 
             <div class="admin-card card">
+                <h3>🧹 Cleaning Company Management</h3>
+                
+                <div class="form-group">
+                    <label>Cleaning Company Contact</label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="text" id="cleaning-company" placeholder="Company Name" value="Cape Coral Cleaning Services">
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="cleaning-phone" placeholder="Phone Number" value="(239) 555-0199">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Schedule Cleaning After Check-out</label>
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <input type="date" id="cleaning-date" style="flex: 1; min-width: 150px;">
+                        <input type="time" id="cleaning-time" value="11:30" style="flex: 1; min-width: 120px;">
+                        <button class="btn" onclick="scheduleCleaningFromCheckout()">Auto-Schedule</button>
+                    </div>
+                    <p class="small-text">Auto-schedule will set cleaning 30 minutes after check-out time</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Cleaning Checklist</label>
+                    <textarea id="cleaning-checklist" rows="8" style="width: 100%;">LIVING AREAS: ✓ Vacuum all carpets and rugs ✓ Mop all hard floors ✓ Dust all surfaces
+KITCHEN: ✓ Clean countertops ✓ Clean appliances ✓ Restock supplies
+BATHROOMS: ✓ Clean and disinfect ✓ Replace towels ✓ Restock supplies
+BEDROOMS: ✓ Fresh linens ✓ Vacuum floors ✓ Dust surfaces
+FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
+                </div>
+
+                <div class="form-row">
+                    <button class="btn btn-success" onclick="saveCleaningInfo()">Save Cleaning Details</button>
+                    <button class="btn" onclick="sendCleaningReminder()">📱 Send SMS Reminder</button>
+                </div>
+            </div>
+
+            <div class="admin-card card">
+                <h3>🗑️ Trash Pickup Management</h3>
+                
+                <div class="alert-info" style="margin-bottom: 20px;">
+                    <strong>Pickup Schedule:</strong> Monday morning pickup - trash goes out Sunday night
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <h4>📍 Trash Bin Location</h4>
+                    <p><strong>Location:</strong> Right side of house next to AC units</p>
+                    <p><strong>Instructions for Guests:</strong></p>
+                    <ul>
+                        <li>Take bins to the curb Sunday evening</li>
+                        <li>Return empty bins to AC unit area after pickup</li>
+                        <li>Both regular trash and recycling bins available</li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label>Current Week Reminder Status</label>
+                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                        <button class="btn" onclick="sendTrashReminder()">📱 Send Trash Reminder to Guest</button>
+                        <button class="btn" onclick="markTrashCompleted()">✅ Mark as Completed</button>
+                        <span id="trash-status" style="padding: 8px 15px; border-radius: 5px; background: #fef3c7; color: #92400e;">Pending</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Custom Trash Instructions</label>
+                    <textarea id="trash-instructions" rows="4" style="width: 100%;">Please take trash bins to the curb Sunday evening for Monday morning pickup. Bins are located on the right side of the house next to the AC units. Return empty bins to the same location after pickup. Thank you!</textarea>
+                </div>
+
+                <button class="btn btn-success" onclick="saveTrashInfo()">Save Trash Instructions</button>
+            </div>
+
+            <div class="admin-card card">
                 <h3>Property Information</h3>
                 <div class="form-group">
                     <label>Property Name</label>
@@ -484,7 +666,7 @@
 
         function showPage(pageId, buttonElement) {
             // Hide all pages
-            const pages = ['home', 'access', 'attractions', 'rules', 'emergency', 'admin-login', 'admin-dashboard', 'admin-settings'];
+            const pages = ['home', 'access', 'attractions', 'music', 'rules', 'emergency', 'admin-login', 'admin-dashboard', 'admin-settings'];
             pages.forEach(page => {
                 const element = document.getElementById(page + '-page');
                 if (element) element.style.display = 'none';
@@ -534,6 +716,9 @@
             document.getElementById('admin-door-code').value = guestData.doorCode;
             document.getElementById('admin-wifi-name').value = guestData.wifiName;
             document.getElementById('admin-wifi-password').value = guestData.wifiPassword;
+            
+            // Load cleaning data
+            loadCleaningData();
         }
 
         function updateGuestInfo() {
@@ -574,6 +759,10 @@
             document.getElementById('access-door-code').textContent = guestData.doorCode;
             document.getElementById('access-wifi-name').textContent = guestData.wifiName;
             document.getElementById('access-wifi-password').textContent = guestData.wifiPassword;
+            
+            // Update music page WiFi name if it exists
+            const musicWifiEl = document.getElementById('music-wifi-name');
+            if (musicWifiEl) musicWifiEl.textContent = guestData.wifiName;
         }
 
         function showAlert(message, type) {
@@ -595,6 +784,340 @@
                     alertDiv.remove();
                 }
             }, 4000);
+        }
+
+        // Music/Audio System Functions
+        function connectSpotify() {
+            // Check if we're on mobile/tablet
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // Try to open Spotify app directly
+                const spotifyAppURL = 'spotify://';
+                const spotifyWebURL = 'https://open.spotify.com';
+                
+                // Create a hidden iframe to attempt app launch
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = spotifyAppURL;
+                document.body.appendChild(iframe);
+                
+                // Fallback to web version after a short delay
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                    window.open(spotifyWebURL, '_blank');
+                }, 1000);
+                
+                showAlert('Opening Spotify... Look for "Cape Coral Retreat Audio" in your devices list!', 'success');
+            } else {
+                // Desktop - open Spotify Web Player
+                window.open('https://open.spotify.com', '_blank');
+                showAlert('Spotify opened! Look for "Cape Coral Retreat Audio" in the devices list.', 'info');
+            }
+        }
+
+        function showMusicInstructions() {
+            showAlert('📱 Connect to house WiFi, then look for "Cape Coral Retreat Audio" in your music app!', 'info');
+        }
+
+        function selectZone(zone) {
+            const zones = {
+                'living': 'Living Room',
+                'pool': 'Pool Area',
+                'kitchen': 'Kitchen',
+                'all': 'Whole House'
+            };
+            
+            document.getElementById('selected-zone').textContent = zones[zone];
+            document.getElementById('zone-selected').style.display = 'block';
+            
+            showAlert(`Audio zone set to: ${zones[zone]}`, 'success');
+            
+            // Hide the notification after showing the selected zone
+            setTimeout(() => {
+                const zoneEl = document.getElementById('zone-selected');
+                if (zoneEl) zoneEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function openPlaylist(type) {
+            const playlists = {
+                'tropical': 'https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd',
+                'chill': 'https://open.spotify.com/playlist/37i9dQZF1DWS1zOdTE8uo8',
+                'party': 'https://open.spotify.com/playlist/37i9dQZF1DX0XUfTFmNBRM',
+                'dinner': 'https://open.spotify.com/playlist/37i9dQZF1DX0SM0LYsmbMT'
+            };
+            
+            const playlistNames = {
+                'tropical': 'Tropical Vibes',
+                'chill': 'Chill Lounge',
+                'party': 'Party Mix',
+                'dinner': 'Dinner Jazz'
+            };
+            
+            // Try to open Spotify app first on mobile
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // Convert web URL to app URL
+                const appURL = playlists[type].replace('https://open.spotify.com', 'spotify:');
+                
+                // Try app first, fallback to web
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = appURL;
+                document.body.appendChild(iframe);
+                
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                    window.open(playlists[type], '_blank');
+                }, 1000);
+            } else {
+                window.open(playlists[type], '_blank');
+            }
+            
+            showAlert(`Opening ${playlistNames[type]} playlist! Remember to select "Cape Coral Retreat Audio" as your device.`, 'success');
+        }
+
+        // Cleaning Management Functions
+        function scheduleCleaningFromCheckout() {
+            const checkOutDate = document.getElementById('admin-checkout').value;
+            if (checkOutDate) {
+                document.getElementById('cleaning-date').value = checkOutDate;
+                document.getElementById('cleaning-time').value = '11:30';
+                showAlert('Cleaning automatically scheduled for 30 minutes after checkout!', 'success');
+            } else {
+                showAlert('Please set a check-out date first in the Dashboard', 'error');
+            }
+        }
+
+        function saveCleaningInfo() {
+            const company = document.getElementById('cleaning-company').value;
+            const phone = document.getElementById('cleaning-phone').value;
+            const date = document.getElementById('cleaning-date').value;
+            const time = document.getElementById('cleaning-time').value;
+            const checklist = document.getElementById('cleaning-checklist').value;
+            
+            // Save to localStorage
+            const cleaningData = {
+                company,
+                phone,
+                date,
+                time,
+                checklist,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            try {
+                localStorage.setItem('capeCoralCleaning', JSON.stringify(cleaningData));
+                showAlert('Cleaning information saved successfully!', 'success');
+            } catch (error) {
+                showAlert('Could not save cleaning data', 'error');
+            }
+        }
+
+        function sendCleaningReminder() {
+            const company = document.getElementById('cleaning-company').value;
+            const phone = document.getElementById('cleaning-phone').value;
+            const date = document.getElementById('cleaning-date').value;
+            const time = document.getElementById('cleaning-time').value;
+            
+            if (!company || !phone || !date || !time) {
+                showAlert('Please fill in cleaning company, phone number, date, and time first', 'error');
+                return;
+            }
+            
+            // Format the date nicely
+            const formattedDate = new Date(date).toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Create detailed message
+            const message = `Hi ${company}! 
+
+Cleaning reminder for Cape Coral Home Retreat:
+📅 Date: ${formattedDate}
+⏰ Time: ${time}
+🏠 Address: 123 SW 51st Terrace, Cape Coral, FL
+
+Please confirm you can make this appointment. Thanks!`;
+            
+            // Clean phone number (remove non-digits)
+            const cleanPhone = phone.replace(/\D/g, '');
+            
+            // Create SMS link
+            const smsLink = `sms:+1${cleanPhone}?body=${encodeURIComponent(message)}`;
+            
+            // Check if we're on mobile/tablet
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // On mobile - open SMS app directly
+                window.location.href = smsLink;
+                showAlert('Opening SMS app to send reminder...', 'success');
+            } else {
+                // On desktop - show instructions window
+                const instructionWindow = window.open('', 'SMS Instructions', 'width=500,height=400');
+                instructionWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Send SMS Reminder</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; background: #f8fafc; }
+                            .container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                            .message-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; white-space: pre-line; border-left: 4px solid #00B4D8; }
+                            .phone { font-size: 18px; font-weight: bold; color: #00B4D8; }
+                            .copy-btn { background: #00B4D8; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 5px; }
+                            .copy-btn:hover { background: #0096C7; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <h2>📱 Send SMS Reminder</h2>
+                            <p><strong>Send to:</strong> <span class="phone">${phone}</span></p>
+                            
+                            <h3>Message:</h3>
+                            <div class="message-box">${message}</div>
+                            
+                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${message}'); alert('Message copied!')">📋 Copy Message</button>
+                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${cleanPhone}'); alert('Phone number copied!')">📞 Copy Phone</button>
+                            <button class="copy-btn" onclick="window.close()">❌ Close</button>
+                            
+                            <h3>Instructions:</h3>
+                            <ol>
+                                <li>Copy the message and phone number using the buttons above</li>
+                                <li>Open your phone's messaging app</li>
+                                <li>Create a new message to the copied phone number</li>
+                                <li>Paste the copied message and send!</li>
+                            </ol>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                showAlert('SMS reminder window opened with message details', 'info');
+            }
+        }
+
+        function loadCleaningData() {
+            try {
+                const saved = localStorage.getItem('capeCoralCleaning');
+                if (saved) {
+                    const cleaningData = JSON.parse(saved);
+                    document.getElementById('cleaning-company').value = cleaningData.company || 'Cape Coral Cleaning Services';
+                    document.getElementById('cleaning-phone').value = cleaningData.phone || '(239) 555-0199';
+                    document.getElementById('cleaning-date').value = cleaningData.date || '';
+                    document.getElementById('cleaning-time').value = cleaningData.time || '11:30';
+                    document.getElementById('cleaning-checklist').value = cleaningData.checklist || document.getElementById('cleaning-checklist').value;
+                }
+                
+                // Load trash data
+                const savedTrash = localStorage.getItem('capeCoralTrash');
+                if (savedTrash) {
+                    const trashData = JSON.parse(savedTrash);
+                    document.getElementById('trash-instructions').value = trashData.instructions || document.getElementById('trash-instructions').value;
+                    updateTrashStatus(trashData.status || 'pending');
+                }
+            } catch (error) {
+                console.log('No saved cleaning/trash data found');
+            }
+        }
+
+        // Trash Management Functions
+        function sendTrashReminder() {
+            const guestName = guestData.guestName;
+            const instructions = document.getElementById('trash-instructions').value;
+            
+            // Create reminder message
+            const message = `Hi ${guestName}!
+
+Friendly reminder about trash pickup at Cape Coral Home Retreat:
+
+🗑️ TRASH PICKUP: Monday morning
+📅 ACTION NEEDED: Please take bins to curb Sunday evening
+
+📍 Bin Location: Right side of house next to AC units
+
+${instructions}
+
+Thank you for helping keep our property clean!`;
+            
+            // For now, show the message (in real app, this could send SMS/email)
+            const reminderWindow = window.open('', 'TrashReminder', 'width=500,height=400');
+            reminderWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Trash Pickup Reminder</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; background: #f8fafc; }
+                        .container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                        .message-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; white-space: pre-line; border-left: 4px solid #F77F00; }
+                        .copy-btn { background: #F77F00; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 5px; }
+                        .copy-btn:hover { background: #D97706; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h2>🗑️ Trash Pickup Reminder</h2>
+                        <p><strong>For:</strong> ${guestName}</p>
+                        
+                        <h3>Message:</h3>
+                        <div class="message-box">${message}</div>
+                        
+                        <button class="copy-btn" onclick="navigator.clipboard.writeText('${message}'); alert('Message copied!')">📋 Copy Message</button>
+                        <button class="copy-btn" onclick="window.close()">❌ Close</button>
+                        
+                        <p><strong>Note:</strong> Copy this message to send via your preferred method (SMS, email, etc.)</p>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            showAlert('Trash reminder prepared for guest', 'success');
+        }
+
+        function markTrashCompleted() {
+            updateTrashStatus('completed');
+            saveTrashInfo();
+            showAlert('Trash pickup marked as completed', 'success');
+        }
+
+        function updateTrashStatus(status) {
+            const statusEl = document.getElementById('trash-status');
+            if (statusEl) {
+                if (status === 'completed') {
+                    statusEl.textContent = 'Completed';
+                    statusEl.style.background = '#d1fae5';
+                    statusEl.style.color = '#065f46';
+                } else {
+                    statusEl.textContent = 'Pending';
+                    statusEl.style.background = '#fef3c7';
+                    statusEl.style.color = '#92400e';
+                }
+            }
+        }
+
+        function saveTrashInfo() {
+            const instructions = document.getElementById('trash-instructions').value;
+            const statusEl = document.getElementById('trash-status');
+            const status = statusEl ? statusEl.textContent.toLowerCase() : 'pending';
+            
+            const trashData = {
+                instructions,
+                status,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            try {
+                localStorage.setItem('capeCoralTrash', JSON.stringify(trashData));
+                showAlert('Trash information saved successfully!', 'success');
+            } catch (error) {
+                showAlert('Could not save trash data', 'error');
+            }
         }
 
         // Initialize on page load
