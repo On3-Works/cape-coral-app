@@ -448,6 +448,104 @@
             </div>
         </div>
 
+        <!-- Admin Property Management -->
+        <div id="admin-property-page" style="display: none;">
+            <h2>🏠 Property Management</h2>
+            
+            <div class="admin-card card">
+                <h3>Property Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Property Name</label>
+                        <input type="text" id="admin-property-name" value="Cape Coral Home Retreat">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="admin-property-location" value="Cape Coral, Florida">
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="updatePropertyInfo()">Update Property Info</button>
+            </div>
+
+            <div class="admin-card card">
+                <h3>Property Rules Management</h3>
+                <div class="form-group">
+                    <label>Property Rules (one per line)</label>
+                    <textarea id="admin-property-rules" rows="12" style="width: 100%;">Check-in: 4:00 PM - 9:00 PM (Please contact us if arriving after 9 PM)
+Check-out: 11:00 AM (Late check-out available upon request)
+No smoking anywhere on the property (including lanai and pool area)
+Maximum occupancy: 6 guests
+Quiet hours: 10:00 PM - 8:00 AM (Respect our neighbors)
+Pool hours: 8:00 AM - 10:00 PM
+No glass containers in pool area
+Please rinse off before entering pool after beach visits
+All towels and linens provided - no need to bring your own
+Parking: Maximum 2 vehicles in driveway
+No pets allowed (service animals welcome with prior notice)
+Please dispose of trash in provided bins - pickup is Wednesday</textarea>
+                </div>
+                <button class="btn btn-success" onclick="updatePropertyRules()">Update Rules</button>
+            </div>
+
+            <div class="admin-card card">
+                <h3>Emergency Contacts</h3>
+                <div id="emergency-contacts-admin">
+                    <div class="form-row" style="margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label>Property Manager Phone</label>
+                            <input type="tel" id="admin-pm-phone" value="(239) 574-1234">
+                        </div>
+                        <div class="form-group">
+                            <label>Local Police Phone</label>
+                            <input type="tel" id="admin-police-phone" value="(239) 574-3223">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Hospital Phone</label>
+                            <input type="tel" id="admin-hospital-phone" value="(239) 343-2000">
+                        </div>
+                        <div class="form-group">
+                            <label>Emergency Services</label>
+                            <input type="tel" id="admin-emergency-phone" value="911" readonly>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="updateEmergencyContacts()">Update Emergency Contacts</button>
+            </div>
+
+            <div class="admin-card card">
+                <h3>Local Attractions Management</h3>
+                <div class="form-group">
+                    <label>Attractions (Format: Name | Type | Distance | Rating)</label>
+                    <textarea id="admin-attractions" rows="8" style="width: 100%;">Yacht Club Beach | Beach | 6 min | 4.5
+Cape Coral Beach at Four Freedoms Park | Beach | 8 min | 4.3
+Rotary Park Environmental Center | Nature | 12 min | 4.4
+Sun Splash Family Waterpark | Entertainment | 15 min | 4.1
+Cape Coral Farmers Market | Shopping | 10 min | 4.2
+Edison and Ford Winter Estates | Historical | 20 min | 4.6</textarea>
+                </div>
+                <button class="btn btn-success" onclick="updateAttractions()">Update Attractions</button>
+                <p class="small-text">Format each line as: Name | Type | Distance | Rating</p>
+            </div>
+
+            <div class="admin-card card">
+                <h3>Theme & Styling</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Primary Color (Cyan)</label>
+                        <input type="color" id="admin-primary-color" value="#00B4D8">
+                    </div>
+                    <div class="form-group">
+                        <label>Accent Color (Orange)</label>
+                        <input type="color" id="admin-accent-color" value="#F77F00">
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="updateTheme()">Update Theme Colors</button>
+                <p class="small-text">Note: Color changes require page refresh to take full effect</p>
+            </div>
+        </div>
+
         <!-- Admin Data Management -->
         <div id="admin-data-page" style="display: none;">
             <h2>💾 Data Management</h2>
@@ -485,7 +583,11 @@
             confirmation: 'ABC123',
             doorCode: '1234',
             wifiName: 'CapeCoral_Retreat_Guest',
-            wifiPassword: 'Tropical2025!'
+            wifiPassword: 'Tropical2025!',
+            propertyName: 'Cape Coral Home Retreat',
+            propertyLocation: 'Cape Coral, Florida',
+            primaryColor: '#00B4D8',
+            accentColor: '#F77F00'
         };
 
         // Load saved data on page load
@@ -566,6 +668,14 @@
             document.getElementById('admin-door-code').value = propertyData.doorCode;
             document.getElementById('admin-wifi-name').value = propertyData.wifiName;
             document.getElementById('admin-wifi-password').value = propertyData.wifiPassword;
+            
+            // Load property data
+            if (document.getElementById('admin-property-name')) {
+                document.getElementById('admin-property-name').value = propertyData.propertyName || 'Cape Coral Home Retreat';
+                document.getElementById('admin-property-location').value = propertyData.propertyLocation || 'Cape Coral, Florida';
+                document.getElementById('admin-primary-color').value = propertyData.primaryColor || '#00B4D8';
+                document.getElementById('admin-accent-color').value = propertyData.accentColor || '#F77F00';
+            }
         }
 
         function updateBooking() {
@@ -639,6 +749,68 @@
             updateDisplays();
             loadAdminData();
             alert('Data reset to defaults');
+        }
+
+        // Property management functions
+        function updatePropertyInfo() {
+            propertyData.propertyName = document.getElementById('admin-property-name').value;
+            propertyData.propertyLocation = document.getElementById('admin-property-location').value;
+            
+            // Update the header display
+            document.querySelector('.nav h1').textContent = '🏖️ ' + propertyData.propertyName;
+            document.querySelector('.nav p').textContent = propertyData.propertyLocation;
+            
+            saveData();
+            showSuccessAlert('Property information updated successfully!', 'admin-property-page');
+        }
+
+        function updatePropertyRules() {
+            const rules = document.getElementById('admin-property-rules').value;
+            // Store rules for future use - could update the rules page dynamically
+            propertyData.propertyRules = rules;
+            saveData();
+            showSuccessAlert('Property rules updated successfully!', 'admin-property-page');
+        }
+
+        function updateEmergencyContacts() {
+            propertyData.pmPhone = document.getElementById('admin-pm-phone').value;
+            propertyData.policePhone = document.getElementById('admin-police-phone').value;
+            propertyData.hospitalPhone = document.getElementById('admin-hospital-phone').value;
+            
+            saveData();
+            showSuccessAlert('Emergency contacts updated successfully!', 'admin-property-page');
+        }
+
+        function updateAttractions() {
+            const attractions = document.getElementById('admin-attractions').value;
+            propertyData.attractions = attractions;
+            saveData();
+            showSuccessAlert('Attractions updated successfully!', 'admin-property-page');
+        }
+
+        function updateTheme() {
+            propertyData.primaryColor = document.getElementById('admin-primary-color').value;
+            propertyData.accentColor = document.getElementById('admin-accent-color').value;
+            
+            // Apply theme changes immediately to some elements
+            const style = document.createElement('style');
+            style.textContent = `
+                .btn { background: ${propertyData.primaryColor} !important; border-bottom-color: ${propertyData.accentColor} !important; }
+                .card { border-left-color: ${propertyData.primaryColor} !important; }
+                .nav { border-left-color: ${propertyData.primaryColor} !important; }
+            `;
+            document.head.appendChild(style);
+            
+            saveData();
+            showSuccessAlert('Theme updated! Refresh page to see all changes.', 'admin-property-page');
+        }
+
+        function showSuccessAlert(message, pageId) {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success';
+            alert.textContent = message;
+            document.querySelector('#' + pageId).insertBefore(alert, document.querySelector('#' + pageId).firstChild);
+            setTimeout(() => alert.remove(), 3000);
         }
 
         // Initialize on page load
