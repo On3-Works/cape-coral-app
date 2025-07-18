@@ -505,28 +505,38 @@
             <h2>📞 Emergency Contacts</h2>
             <div class="stats-grid">
                 <div class="emergency-card">
-                    <h3>Property Manager</h3>
+                    <h3>Local Property Manager</h3>
                     <p style="font-size: 28px; font-weight: bold; margin: 15px 0;">
-                        <a href="tel:+12395741234" class="phone-link">(239) 574-1234</a>
+                        <a href="tel:+12397229391" class="phone-link">(239) 722-9391</a>
                     </p>
+                    <p class="small-text">Juan - Local Property Manager</p>
                 </div>
                 <div class="emergency-card">
                     <h3>Emergency Services</h3>
                     <p style="font-size: 28px; font-weight: bold; margin: 15px 0;">
                         <a href="tel:911" class="phone-link">911</a>
                     </p>
+                    <p class="small-text">Police / Fire / Medical Emergency</p>
                 </div>
                 <div class="emergency-card">
                     <h3>Cape Coral Police</h3>
                     <p style="font-size: 28px; font-weight: bold; margin: 15px 0;">
                         <a href="tel:+12395743223" class="phone-link">(239) 574-3223</a>
                     </p>
+                    <p class="small-text">Non-Emergency Police</p>
                 </div>
                 <div class="emergency-card">
-                    <h3>Lee Memorial Hospital</h3>
+                    <h3>Cape Coral Fire Dept</h3>
                     <p style="font-size: 28px; font-weight: bold; margin: 15px 0;">
-                        <a href="tel:+12393432000" class="phone-link">(239) 343-2000</a>
+                        <a href="tel:+12395740501" class="phone-link">(239) 574-0501</a>
                     </p>
+                </div>
+                <div class="emergency-card">
+                    <h3>Lee County Emergency</h3>
+                    <p style="font-size: 28px; font-weight: bold; margin: 15px 0;">
+                        <a href="tel:+12395330622" class="phone-link">(239) 533-0622</a>
+                    </p>
+                    <p class="small-text">Emergency Management</p>
                 </div>
             </div>
         </div>
@@ -548,6 +558,27 @@
         <!-- Admin Dashboard -->
         <div id="admin-dashboard-page" style="display: none;">
             <h2>📊 Admin Dashboard</h2>
+            
+            <!-- Airbnb CSV Import -->
+            <div class="admin-card card">
+                <h3>📤 Import from Airbnb</h3>
+                <div class="alert-info" style="margin-bottom: 20px;">
+                    <strong>How to get Airbnb data:</strong> Go to Host Dashboard → Progress → Insights → Export Data → Select "Reservations" → Download CSV
+                </div>
+                
+                <div class="form-group">
+                    <label>Upload Airbnb CSV File</label>
+                    <input type="file" id="airbnb-csv" accept=".csv" onchange="processAirbnbCSV()">
+                    <p class="small-text">Upload your Airbnb reservations CSV to automatically import booking data</p>
+                </div>
+                
+                <div id="csv-preview" style="display: none; margin: 20px 0;">
+                    <h4>📋 Imported Bookings Preview:</h4>
+                    <div id="csv-data" style="max-height: 300px; overflow-y: auto;"></div>
+                </div>
+                
+                <button class="btn" onclick="parseAirbnbData()" style="display: none;" id="parse-btn">📊 Process CSV Data</button>
+            </div>
             
             <div class="admin-card card">
                 <h3>Current Booking Management</h3>
@@ -582,6 +613,7 @@
                     </div>
                 </div>
                 <button class="btn btn-success" onclick="updateGuestInfo()">Update Guest Information</button>
+                <button class="btn" onclick="generateNewDoorCode()">🔑 Generate New Door Code</button>
             </div>
         </div>
 
@@ -703,8 +735,8 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             guestCount: 4,
             confirmation: 'ABC123',
             doorCode: '1234',
-            wifiName: 'CapeCoral_Retreat_Guest',
-            wifiPassword: 'Tropical2025!'
+            wifiName: 'CapeRetreatGuest',
+            wifiPassword: 'HavingFun2025'
         };
 
         function showPage(pageId, buttonElement) {
@@ -757,8 +789,8 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             document.getElementById('admin-checkout').value = '2025-07-21';
             document.getElementById('admin-confirmation').value = guestData.confirmation;
             document.getElementById('admin-door-code').value = guestData.doorCode;
-            document.getElementById('admin-wifi-name').value = guestData.wifiName;
-            document.getElementById('admin-wifi-password').value = guestData.wifiPassword;
+            document.getElementById('admin-wifi-name').value = 'CapeRetreatGuest';
+            document.getElementById('admin-wifi-password').value = 'HavingFun2025';
             
             // Load cleaning data
             loadCleaningData();
@@ -1161,6 +1193,184 @@ Thank you for helping keep our property clean!`;
             } catch (error) {
                 showAlert('Could not save trash data', 'error');
             }
+        }
+
+        // Airbnb CSV Import Functions
+        function processAirbnbCSV() {
+            const fileInput = document.getElementById('airbnb-csv');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const csv = e.target.result;
+                    displayCSVPreview(csv);
+                    document.getElementById('parse-btn').style.display = 'inline-block';
+                };
+                
+                reader.readAsText(file);
+            }
+        }
+
+        function displayCSVPreview(csv) {
+            const lines = csv.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            
+            // Show first few lines as preview
+            let previewHTML = '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">';
+            previewHTML += '<strong>CSV Headers Found:</strong><br>';
+            previewHTML += headers.join(', ');
+            previewHTML += '</div>';
+            
+            previewHTML += '<div style="background: #e8f4fd; padding: 15px; border-radius: 8px; margin: 15px 0;">';
+            previewHTML += '<strong>Preview:</strong><br>';
+            previewHTML += `Found ${lines.length - 1} booking records`;
+            previewHTML += '</div>';
+            
+            document.getElementById('csv-data').innerHTML = previewHTML;
+            document.getElementById('csv-preview').style.display = 'block';
+            
+            // Store CSV data for processing
+            window.csvData = csv;
+        }
+
+        function parseAirbnbData() {
+            if (!window.csvData) {
+                showAlert('No CSV data to process', 'error');
+                return;
+            }
+            
+            const lines = window.csvData.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            const bookings = [];
+            
+            // Parse CSV data
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim()) {
+                    const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+                    const booking = {};
+                    
+                    headers.forEach((header, index) => {
+                        booking[header] = values[index] || '';
+                    });
+                    
+                    if (booking['Guest name'] || booking['Guest Name']) {
+                        bookings.push(booking);
+                    }
+                }
+            }
+            
+            if (bookings.length === 0) {
+                showAlert('No valid bookings found in CSV', 'error');
+                return;
+            }
+            
+            displayBookingsList(bookings);
+        }
+
+        function displayBookingsList(bookings) {
+            let html = '<h4>📋 Select a Booking to Import:</h4>';
+            html += '<div style="max-height: 400px; overflow-y: auto;">';
+            
+            bookings.forEach((booking, index) => {
+                // Try different possible column names from Airbnb CSV
+                const guestName = booking['Guest name'] || booking['Guest Name'] || booking['Guest'] || 'Unknown Guest';
+                const checkIn = booking['Start date'] || booking['Check-in'] || booking['Checkin'] || booking['Check in'] || '';
+                const checkOut = booking['End date'] || booking['Check-out'] || booking['Checkout'] || booking['Check out'] || '';
+                const confirmation = booking['Confirmation code'] || booking['Confirmation Code'] || booking['Confirmation'] || `BK${Date.now()}${index}`;
+                const nights = booking['Nights'] || booking['# of nights'] || 'N/A';
+                const guests = booking['Guests'] || booking['Guest count'] || booking['# of guests'] || '2';
+                
+                html += `
+                    <div style="background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; cursor: pointer; transition: all 0.2s ease;" 
+                         onclick="importBooking(${index})" onmouseover="this.style.background='#e8f4fd'" onmouseout="this.style.background='#f8f9fa'">
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; align-items: center;">
+                            <div>
+                                <strong style="color: #1f2937;">${guestName}</strong><br>
+                                <small style="color: #6b7280;">Confirmation: ${confirmation}</small>
+                            </div>
+                            <div>
+                                <strong>Check-in:</strong><br>
+                                <span style="color: #059669;">${formatDate(checkIn)}</span>
+                            </div>
+                            <div>
+                                <strong>Check-out:</strong><br>
+                                <span style="color: #dc2626;">${formatDate(checkOut)}</span>
+                            </div>
+                            <button class="btn" style="font-size: 12px; padding: 6px 12px;">Import</button>
+                        </div>
+                        <div style="margin-top: 10px; font-size: 14px; color: #6b7280;">
+                            ${guests} guests • ${nights} nights
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('csv-data').innerHTML = html;
+            
+            // Store bookings for import
+            window.parsedBookings = bookings;
+        }
+
+        function importBooking(index) {
+            const booking = window.parsedBookings[index];
+            
+            // Map Airbnb CSV fields to our form fields
+            const guestName = booking['Guest name'] || booking['Guest Name'] || booking['Guest'] || 'Unknown Guest';
+            const checkIn = booking['Start date'] || booking['Check-in'] || booking['Checkin'] || booking['Check in'] || '';
+            const checkOut = booking['End date'] || booking['Check-out'] || booking['Checkout'] || booking['Check out'] || '';
+            const confirmation = booking['Confirmation code'] || booking['Confirmation Code'] || booking['Confirmation'] || `BK${Date.now()}`;
+            const guests = booking['Guests'] || booking['Guest count'] || booking['# of guests'] || booking['Adults'] || '2';
+            
+            // Update form fields
+            document.getElementById('admin-guest-name').value = guestName;
+            document.getElementById('admin-guest-count').value = parseInt(guests) || 2;
+            document.getElementById('admin-checkin').value = formatDateForInput(checkIn);
+            document.getElementById('admin-checkout').value = formatDateForInput(checkOut);
+            document.getElementById('admin-confirmation').value = confirmation;
+            
+            // Generate new door code
+            generateNewDoorCode();
+            
+            // Update guest data
+            updateGuestInfo();
+            
+            showAlert(`Successfully imported booking for ${guestName}!`, 'success');
+            
+            // Hide the import section
+            document.getElementById('csv-preview').style.display = 'none';
+            document.getElementById('parse-btn').style.display = 'none';
+            document.getElementById('airbnb-csv').value = '';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Not specified';
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        function formatDateForInput(dateStr) {
+            if (!dateStr) return '';
+            try {
+                const date = new Date(dateStr);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function generateNewDoorCode() {
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+            document.getElementById('admin-door-code').value = code;
+            showAlert(`New door code generated: ${code}`, 'info');
         }
 
         // Initialize on page load
