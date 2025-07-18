@@ -625,4 +625,298 @@ Seed to Table | Restaurant | 15.2 miles to Naples | 25 min drive | 5.0</textarea
                     propertyData = { ...propertyData, ...JSON.parse(saved) };
                 }
             } catch (error) {
-                console.log('No saved data found, using defaults
+                console.log('No saved data found, using defaults');
+            }
+            updateDisplays();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            try {
+                localStorage.setItem('capeCoralData', JSON.stringify(propertyData));
+            } catch (error) {
+                console.log('Could not save data');
+            }
+        }
+
+        // Update all display elements
+        function updateDisplays() {
+            const elements = [
+                { id: 'display-guest-name', value: propertyData.guestName },
+                { id: 'display-checkin', value: propertyData.checkIn },
+                { id: 'display-checkout', value: propertyData.checkOut },
+                { id: 'display-guest-count', value: propertyData.guestCount },
+                { id: 'display-confirmation', value: propertyData.confirmation },
+                { id: 'display-door-code', value: propertyData.doorCode },
+                { id: 'display-wifi-name', value: propertyData.wifiName },
+                { id: 'display-wifi-password', value: propertyData.wifiPassword },
+                { id: 'access-door-code', value: propertyData.doorCode },
+                { id: 'access-wifi-name', value: propertyData.wifiName },
+                { id: 'access-wifi-password', value: propertyData.wifiPassword }
+            ];
+
+            elements.forEach(element => {
+                const el = document.getElementById(element.id);
+                if (el) el.textContent = element.value;
+            });
+        }
+
+        function showPage(pageId, buttonElement) {
+            // Hide all pages
+            const pages = ['home-page', 'access-page', 'attractions-page', 'rules-page', 'emergency-page', 
+                          'admin-login-page', 'admin-bookings-page', 'admin-property-page', 'admin-integrations-page', 'admin-data-page'];
+            pages.forEach(page => {
+                const element = document.getElementById(page);
+                if (element) element.style.display = 'none';
+            });
+            
+            // Show selected page
+            const targetPage = document.getElementById(pageId + '-page');
+            if (targetPage) {
+                targetPage.style.display = 'block';
+            }
+            
+            // Update button states
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+        }
+
+        function login() {
+            const password = document.getElementById('admin-password').value;
+            if (password === 'admin1128') {
+                document.getElementById('guest-nav').style.display = 'none';
+                document.getElementById('admin-nav').style.display = 'flex';
+                showPage('admin-bookings');
+                loadAdminData();
+                document.getElementById('admin-password').value = '';
+            } else {
+                showAlert('Invalid password', 'error');
+            }
+        }
+
+        function logout() {
+            document.getElementById('guest-nav').style.display = 'flex';
+            document.getElementById('admin-nav').style.display = 'none';
+            showPage('home');
+        }
+
+        function loadAdminData() {
+            const adminFields = [
+                { id: 'admin-guest-name', value: propertyData.guestName },
+                { id: 'admin-guest-count', value: propertyData.guestCount },
+                { id: 'admin-checkin', value: propertyData.checkIn },
+                { id: 'admin-checkout', value: propertyData.checkOut },
+                { id: 'admin-confirmation', value: propertyData.confirmation },
+                { id: 'admin-door-code', value: propertyData.doorCode },
+                { id: 'admin-wifi-name', value: propertyData.wifiName },
+                { id: 'admin-wifi-password', value: propertyData.wifiPassword },
+                { id: 'admin-property-name', value: propertyData.propertyName || 'Cape Coral Home Retreat' },
+                { id: 'admin-property-location', value: propertyData.propertyLocation || '123 SW 51st Terrace, Cape Coral, Florida' }
+            ];
+
+            adminFields.forEach(field => {
+                const el = document.getElementById(field.id);
+                if (el) el.value = field.value;
+            });
+        }
+
+        function validateDates() {
+            const checkIn = new Date(document.getElementById('admin-checkin').value);
+            const checkOut = new Date(document.getElementById('admin-checkout').value);
+            const errorDiv = document.getElementById('date-error');
+            const updateBtn = document.getElementById('update-booking-btn');
+            
+            const nextDay = new Date(checkIn);
+            nextDay.setDate(nextDay.getDate() + 1);
+            
+            if (checkOut < nextDay) {
+                errorDiv.style.display = 'block';
+                updateBtn.disabled = true;
+                return false;
+            } else {
+                errorDiv.style.display = 'none';
+                updateBtn.disabled = false;
+                return true;
+            }
+        }
+
+        function updateBooking() {
+            if (!validateDates()) return;
+            
+            propertyData.guestName = document.getElementById('admin-guest-name').value;
+            propertyData.guestCount = parseInt(document.getElementById('admin-guest-count').value);
+            propertyData.checkIn = document.getElementById('admin-checkin').value;
+            propertyData.checkOut = document.getElementById('admin-checkout').value;
+            propertyData.confirmation = document.getElementById('admin-confirmation').value;
+            propertyData.doorCode = document.getElementById('admin-door-code').value;
+            
+            saveData();
+            updateDisplays();
+            showAlert('Booking information updated successfully!', 'success');
+        }
+
+        function updateWifi() {
+            propertyData.wifiName = document.getElementById('admin-wifi-name').value;
+            propertyData.wifiPassword = document.getElementById('admin-wifi-password').value;
+            
+            saveData();
+            updateDisplays();
+            showAlert('WiFi information updated successfully!', 'success');
+        }
+
+        function updatePropertyInfo() {
+            propertyData.propertyName = document.getElementById('admin-property-name').value;
+            propertyData.propertyLocation = document.getElementById('admin-property-location').value;
+            
+            // Update the header display immediately
+            document.querySelector('.nav h1').textContent = '🏖️ ' + propertyData.propertyName;
+            document.querySelector('.nav p').textContent = propertyData.propertyLocation;
+            
+            saveData();
+            showAlert('Property information updated successfully!', 'success');
+        }
+
+        function updateAttractions() {
+            const attractions = document.getElementById('admin-attractions').value;
+            propertyData.attractions = attractions;
+            saveData();
+            showAlert('Attractions updated successfully!', 'success');
+        }
+
+        function scheduleCleaningFromCheckout() {
+            const checkOutDate = document.getElementById('admin-checkout').value;
+            if (checkOutDate) {
+                document.getElementById('cleaning-date').value = checkOutDate;
+                document.getElementById('cleaning-time').value = '11:30';
+                showAlert('Cleaning automatically scheduled for 30 minutes after checkout!', 'success');
+            } else {
+                showAlert('Please set a check-out date first', 'error');
+            }
+        }
+
+        function saveCleaningInfo() {
+            propertyData.cleaningCompany = document.getElementById('cleaning-company').value;
+            propertyData.cleaningPhone = document.getElementById('cleaning-phone').value;
+            propertyData.cleaningDate = document.getElementById('cleaning-date').value;
+            propertyData.cleaningTime = document.getElementById('cleaning-time').value;
+            propertyData.cleaningChecklist = document.getElementById('cleaning-checklist').value;
+            
+            saveData();
+            showAlert('Cleaning information saved successfully!', 'success');
+        }
+
+        function sendCleaningReminder() {
+            const company = document.getElementById('cleaning-company').value;
+            const phone = document.getElementById('cleaning-phone').value;
+            const date = document.getElementById('cleaning-date').value;
+            const time = document.getElementById('cleaning-time').value;
+            
+            if (company && date && time) {
+                const message = `Cleaning scheduled for ${company} on ${date} at ${time} for Cape Coral Home Retreat. Please confirm receipt.`;
+                
+                // Create SMS link (most reliable for mobile)
+                const smsLink = `sms:${phone.replace(/\D/g, '')}?body=${encodeURIComponent(message)}`;
+                window.open(smsLink);
+                
+                showAlert('Reminder sent to cleaning company!', 'success');
+            } else {
+                showAlert('Please fill in cleaning company, date, and time first', 'error');
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(propertyData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'cape-coral-data.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            try {
+                const data = JSON.parse(document.getElementById('import-data').value);
+                propertyData = { ...propertyData, ...data };
+                saveData();
+                updateDisplays();
+                loadAdminData();
+                showAlert('Data imported successfully!', 'success');
+                document.getElementById('import-data').value = '';
+            } catch (error) {
+                showAlert('Invalid JSON format', 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            // Create a non-modal notification
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+                max-width: 300px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(alertDiv);
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 4000);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            
+            // Check for admin access parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                document.getElementById('admin-btn').style.display = 'inline-block';
+            }
+            
+            // Secret key combination to show admin button (Ctrl+Shift+A)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                    document.getElementById('admin-btn').style.display = 'inline-block';
+                    e.preventDefault();
+                }
+            });
+            
+            // Secret click sequence on property name (triple click)
+            let clickCount = 0;
+            document.querySelector('.nav h1').addEventListener('click', function() {
+                clickCount++;
+                if (clickCount === 3) {
+                    document.getElementById('admin-btn').style.display = 'inline-block';
+                    clickCount = 0;
+                }
+                setTimeout(() => clickCount = 0, 2000);
+            });
+            
+            showPage('home');
+            const firstBtn = document.querySelector('.btn');
+            if (firstBtn) firstBtn.classList.add('active');
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
