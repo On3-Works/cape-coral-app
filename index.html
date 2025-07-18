@@ -170,7 +170,7 @@
             <button class="btn" onclick="showPage('attractions', this)">📍 Attractions</button>
             <button class="btn" onclick="showPage('rules', this)">📋 Rules</button>
             <button class="btn" onclick="showPage('emergency', this)">📞 Emergency</button>
-            <button class="btn" onclick="showPage('admin-login', this)">⚙️ Admin</button>
+            <button class="btn" id="admin-btn" onclick="showPage('admin-login', this)" style="display: none;">⚙️ Admin</button>
         </div>
         <div id="admin-nav" style="display: none;">
             <button class="btn" onclick="showPage('admin-bookings', this)">📅 Bookings</button>
@@ -333,7 +333,6 @@
                         <input type="password" id="admin-password" placeholder="Enter admin password" onkeypress="if(event.key==='Enter') login()">
                     </div>
                     <button class="btn btn-success" onclick="login()">Login</button>
-                    <p class="small-text">Default password: admin1128</p>
                 </div>
             </div>
         </div>
@@ -685,7 +684,7 @@ Edison and Ford Winter Estates | Historical | 20 min | 4.6</textarea>
 
         function updateBooking() {
             propertyData.guestName = document.getElementById('admin-guest-name').value;
-            propertyData.guestCount = document.getElementById('admin-guest-count').value;
+            propertyData.guestCount = parseInt(document.getElementById('admin-guest-count').value);
             propertyData.checkIn = document.getElementById('admin-checkin').value;
             propertyData.checkOut = document.getElementById('admin-checkout').value;
             propertyData.confirmation = document.getElementById('admin-confirmation').value;
@@ -694,11 +693,7 @@ Edison and Ford Winter Estates | Historical | 20 min | 4.6</textarea>
             saveData();
             updateDisplays();
             
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-success';
-            alert.textContent = 'Booking information updated successfully!';
-            document.querySelector('#admin-bookings-page').insertBefore(alert, document.querySelector('#admin-bookings-page').firstChild);
-            setTimeout(() => alert.remove(), 3000);
+            showSuccessAlert('Booking information updated successfully!', 'admin-bookings-page');
         }
 
         function updateWifi() {
@@ -708,11 +703,7 @@ Edison and Ford Winter Estates | Historical | 20 min | 4.6</textarea>
             saveData();
             updateDisplays();
             
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-success';
-            alert.textContent = 'WiFi information updated successfully!';
-            document.querySelector('#admin-bookings-page').insertBefore(alert, document.querySelector('#admin-bookings-page').firstChild);
-            setTimeout(() => alert.remove(), 3000);
+            showSuccessAlert('WiFi information updated successfully!', 'admin-bookings-page');
         }
 
         function exportData() {
@@ -748,7 +739,11 @@ Edison and Ford Winter Estates | Historical | 20 min | 4.6</textarea>
                 confirmation: 'ABC123',
                 doorCode: '1234',
                 wifiName: 'CapeCoral_Retreat_Guest',
-                wifiPassword: 'Tropical2025!'
+                wifiPassword: 'Tropical2025!',
+                propertyName: 'Cape Coral Home Retreat',
+                propertyLocation: 'Cape Coral, Florida',
+                primaryColor: '#00B4D8',
+                accentColor: '#F77F00'
             };
             saveData();
             updateDisplays();
@@ -761,7 +756,7 @@ Edison and Ford Winter Estates | Historical | 20 min | 4.6</textarea>
             propertyData.propertyName = document.getElementById('admin-property-name').value;
             propertyData.propertyLocation = document.getElementById('admin-property-location').value;
             
-            // Update the header display
+            // Update the header display immediately
             document.querySelector('.nav h1').textContent = '🏖️ ' + propertyData.propertyName;
             document.querySelector('.nav p').textContent = propertyData.propertyLocation;
             
@@ -771,10 +766,9 @@ Edison and Ford Winter Estates | Historical | 20 min | 4.6</textarea>
 
         function updatePropertyRules() {
             const rules = document.getElementById('admin-property-rules').value;
-            // Store rules for future use - could update the rules page dynamically
             propertyData.propertyRules = rules;
             saveData();
-            showSuccessAlert('Property rules updated successfully!', 'admin-property-page');
+            showSuccessAlert('Property rules updated successfully! Changes will appear on next page refresh.', 'admin-property-page');
         }
 
         function updateEmergencyContacts() {
@@ -783,44 +777,67 @@ Edison and Ford Winter Estates | Historical | 20 min | 4.6</textarea>
             propertyData.hospitalPhone = document.getElementById('admin-hospital-phone').value;
             
             saveData();
-            showSuccessAlert('Emergency contacts updated successfully!', 'admin-property-page');
+            showSuccessAlert('Emergency contacts updated successfully! Changes will appear on next page refresh.', 'admin-property-page');
         }
 
         function updateAttractions() {
             const attractions = document.getElementById('admin-attractions').value;
             propertyData.attractions = attractions;
             saveData();
-            showSuccessAlert('Attractions updated successfully!', 'admin-property-page');
+            showSuccessAlert('Attractions updated successfully! Changes will appear on next page refresh.', 'admin-property-page');
         }
 
         function updateTheme() {
             propertyData.primaryColor = document.getElementById('admin-primary-color').value;
             propertyData.accentColor = document.getElementById('admin-accent-color').value;
             
-            // Apply theme changes immediately to some elements
-            const style = document.createElement('style');
-            style.textContent = `
-                .btn { background: ${propertyData.primaryColor} !important; border-bottom-color: ${propertyData.accentColor} !important; }
-                .card { border-left-color: ${propertyData.primaryColor} !important; }
-                .nav { border-left-color: ${propertyData.primaryColor} !important; }
-            `;
-            document.head.appendChild(style);
-            
             saveData();
-            showSuccessAlert('Theme updated! Refresh page to see all changes.', 'admin-property-page');
+            showSuccessAlert('Theme colors saved! Refresh the page to see all changes.', 'admin-property-page');
         }
 
         function showSuccessAlert(message, pageId) {
             const alert = document.createElement('div');
             alert.className = 'alert alert-success';
             alert.textContent = message;
-            document.querySelector('#' + pageId).insertBefore(alert, document.querySelector('#' + pageId).firstChild);
-            setTimeout(() => alert.remove(), 3000);
+            const page = document.querySelector('#' + pageId);
+            if (page) {
+                page.insertBefore(alert, page.firstChild);
+                setTimeout(() => alert.remove(), 4000);
+            } else {
+                // Fallback - just show browser alert
+                alert(message);
+            }
         }
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
+            
+            // Check for admin access parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                document.getElementById('admin-btn').style.display = 'inline-block';
+            }
+            
+            // Secret key combination to show admin button (Ctrl+Shift+A)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                    document.getElementById('admin-btn').style.display = 'inline-block';
+                    e.preventDefault();
+                }
+            });
+            
+            // Secret click sequence on property name (triple click)
+            let clickCount = 0;
+            document.querySelector('.nav h1').addEventListener('click', function() {
+                clickCount++;
+                if (clickCount === 3) {
+                    document.getElementById('admin-btn').style.display = 'inline-block';
+                    clickCount = 0;
+                }
+                setTimeout(() => clickCount = 0, 2000); // Reset after 2 seconds
+            });
+            
             showPage('home');
             document.querySelector('.btn').classList.add('active');
         });
