@@ -880,16 +880,79 @@ Seed to Table | Restaurant | 15.2 miles to Naples | 25 min drive | 5.0</textarea
             const date = document.getElementById('cleaning-date').value;
             const time = document.getElementById('cleaning-time').value;
             
-            if (company && date && time) {
-                const message = `Cleaning scheduled for ${company} on ${date} at ${time} for Cape Coral Home Retreat. Please confirm receipt.`;
+            if (company && phone && date && time) {
+                // Format the date nicely
+                const formattedDate = new Date(date).toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
                 
-                // Create SMS link (most reliable for mobile)
-                const smsLink = `sms:${phone.replace(/\D/g, '')}?body=${encodeURIComponent(message)}`;
-                window.open(smsLink);
+                // Create detailed message
+                const message = `Hi ${company}! 
+
+Cleaning reminder for Cape Coral Home Retreat:
+📅 Date: ${formattedDate}
+⏰ Time: ${time}
+🏠 Address: 123 SW 51st Terrace, Cape Coral, FL
+
+Please confirm you can make this appointment. Thanks!`;
                 
-                showAlert('Reminder sent to cleaning company!', 'success');
+                // Clean phone number (remove non-digits)
+                const cleanPhone = phone.replace(/\D/g, '');
+                
+                // Create SMS link
+                const smsLink = `sms:+1${cleanPhone}?body=${encodeURIComponent(message)}`;
+                
+                // Check if we're on mobile/tablet
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    // On mobile - open SMS app directly
+                    window.location.href = smsLink;
+                    showAlert('Opening SMS app to send reminder...', 'success');
+                } else {
+                    // On desktop - show instructions
+                    const instructionWindow = window.open('', 'SMS Instructions', 'width=500,height=400');
+                    instructionWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Send SMS Reminder</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; padding: 20px; }
+                                .message-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; white-space: pre-line; }
+                                .phone { font-size: 18px; font-weight: bold; color: #00B4D8; }
+                                .copy-btn { background: #00B4D8; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 5px; }
+                            </style>
+                        </head>
+                        <body>
+                            <h2>📱 Send SMS Reminder</h2>
+                            <p><strong>Send to:</strong> <span class="phone">${phone}</span></p>
+                            
+                            <h3>Message:</h3>
+                            <div class="message-box">${message}</div>
+                            
+                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${message}'); alert('Message copied!')">📋 Copy Message</button>
+                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${cleanPhone}'); alert('Phone number copied!')">📞 Copy Phone</button>
+                            <button class="copy-btn" onclick="window.close()">❌ Close</button>
+                            
+                            <p><strong>Instructions:</strong></p>
+                            <ol>
+                                <li>Copy the message and phone number using the buttons above</li>
+                                <li>Open your phone's messaging app</li>
+                                <li>Create a new message to the copied phone number</li>
+                                <li>Paste the copied message</li>
+                                <li>Send!</li>
+                            </ol>
+                        </body>
+                        </html>
+                    `);
+                    showAlert('SMS reminder window opened with message and phone number', 'info');
+                }
             } else {
-                showAlert('Please fill in cleaning company, date, and time first', 'error');
+                showAlert('Please fill in cleaning company, phone number, date, and time first', 'error');
             }
         }
 
