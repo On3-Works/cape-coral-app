@@ -187,6 +187,29 @@
             gap: 10px;
             padding: 15px 0;
         }
+        .photo-placeholder {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            padding: 40px 20px;
+            border-radius: 12px;
+            border: 2px dashed #00B4D8;
+            text-align: center;
+            color: #6B7280;
+        }
+        .photo-placeholder h3 {
+            color: #00B4D8;
+            margin-bottom: 10px;
+        }
+        .property-photo {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        .property-photo:hover {
+            transform: scale(1.02);
+        }
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -320,11 +343,22 @@
                 <p style="color: white; opacity: 0.9;">Take a virtual tour of your beautiful tropical retreat!</p>
             </div>
             
+            <!-- This is where the property photo will be displayed -->
+            <div class="card">
+                <h3>🏠 Your Beautiful Property</h3>
+                <div id="property-photo-display">
+                    <div class="photo-placeholder">
+                        <h3>🏖️ Property Photo</h3>
+                        <p>Upload a photo in the admin panel to showcase your beautiful property here!</p>
+                    </div>
+                </div>
+            </div>
+            
             <div id="photo-gallery" class="stats-grid">
-                <!-- Photos will be loaded here -->
+                <!-- Additional photos could go here in the future -->
                 <div class="card" style="text-align: center; padding: 40px;">
-                    <h3 style="color: #6B7280;">📷 No Photos Yet</h3>
-                    <p style="color: #9CA3AF;">Photos will appear here once uploaded in the admin panel.</p>
+                    <h3 style="color: #6B7280;">📷 Additional Photos</h3>
+                    <p style="color: #9CA3AF;">More property photos and guest memories can be added here.</p>
                 </div>
             </div>
         </div>
@@ -633,7 +667,6 @@
                 </div>
                 <button class="btn btn-success" onclick="updateGuestInfo()">Update Guest Information</button>
                 <button class="btn" onclick="generateNewDoorCode()">🔑 Generate New Door Code</button>
-                <button class="btn" onclick="syncToGitHub()" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">🔄 Sync to PMS</button>
             </div>
         </div>
 
@@ -898,6 +931,13 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             guestData.wifiName = document.getElementById('admin-wifi-name').value;
             guestData.wifiPassword = document.getElementById('admin-wifi-password').value;
             
+            // Save to localStorage
+            try {
+                localStorage.setItem('capeCoralGuestData', JSON.stringify(guestData));
+            } catch (error) {
+                console.log('Could not save guest data');
+            }
+            
             updateDisplays();
             showAlert('WiFi settings updated successfully!', 'success');
         }
@@ -1066,499 +1106,6 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             showAlert(`Opening ${playlistNames[type]} playlist! Remember to select "Cape Coral Retreat Audio" as your device.`, 'success');
         }
 
-        // Cleaning Management Functions
-        function scheduleCleaningFromCheckout() {
-            const checkOutDate = document.getElementById('admin-checkout').value;
-            if (checkOutDate) {
-                document.getElementById('cleaning-date').value = checkOutDate;
-                document.getElementById('cleaning-time').value = '11:30';
-                showAlert('Cleaning automatically scheduled for 30 minutes after checkout!', 'success');
-            } else {
-                showAlert('Please set a check-out date first in the Dashboard', 'error');
-            }
-        }
-
-        function saveCleaningInfo() {
-            const company = document.getElementById('cleaning-company').value;
-            const phone = document.getElementById('cleaning-phone').value;
-            const date = document.getElementById('cleaning-date').value;
-            const time = document.getElementById('cleaning-time').value;
-            const checklist = document.getElementById('cleaning-checklist').value;
-            
-            // Save to localStorage
-            const cleaningData = {
-                company,
-                phone,
-                date,
-                time,
-                checklist,
-                lastUpdated: new Date().toISOString()
-            };
-            
-            try {
-                localStorage.setItem('capeCoralCleaning', JSON.stringify(cleaningData));
-                showAlert('Cleaning information saved successfully!', 'success');
-            } catch (error) {
-                showAlert('Could not save cleaning data', 'error');
-            }
-        }
-
-        function sendCleaningReminder() {
-            const company = document.getElementById('cleaning-company').value;
-            const phone = document.getElementById('cleaning-phone').value;
-            const date = document.getElementById('cleaning-date').value;
-            const time = document.getElementById('cleaning-time').value;
-            
-            if (!company || !phone || !date || !time) {
-                showAlert('Please fill in cleaning company, phone number, date, and time first', 'error');
-                return;
-            }
-            
-            // Format the date nicely
-            const formattedDate = new Date(date).toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-            
-            // Create detailed message
-            const message = `Hi ${company}! 
-
-Cleaning reminder for Cape Coral Home Retreat:
-📅 Date: ${formattedDate}
-⏰ Time: ${time}
-🏠 Address: 123 SW 51st Terrace, Cape Coral, FL
-
-Please confirm you can make this appointment. Thanks!`;
-            
-            // Clean phone number (remove non-digits)
-            const cleanPhone = phone.replace(/\D/g, '');
-            
-            // Create SMS link
-            const smsLink = `sms:+1${cleanPhone}?body=${encodeURIComponent(message)}`;
-            
-            // Check if we're on mobile/tablet
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                // On mobile - open SMS app directly
-                window.location.href = smsLink;
-                showAlert('Opening SMS app to send reminder...', 'success');
-            } else {
-                // On desktop - show instructions window
-                const instructionWindow = window.open('', 'SMS Instructions', 'width=500,height=400');
-                instructionWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Send SMS Reminder</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; padding: 20px; background: #f8fafc; }
-                            .container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-                            .message-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; white-space: pre-line; border-left: 4px solid #00B4D8; }
-                            .phone { font-size: 18px; font-weight: bold; color: #00B4D8; }
-                            .copy-btn { background: #00B4D8; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 5px; }
-                            .copy-btn:hover { background: #0096C7; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="container">
-                            <h2>📱 Send SMS Reminder</h2>
-                            <p><strong>Send to:</strong> <span class="phone">${phone}</span></p>
-                            
-                            <h3>Message:</h3>
-                            <div class="message-box">${message}</div>
-                            
-                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${message}'); alert('Message copied!')">📋 Copy Message</button>
-                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${cleanPhone}'); alert('Phone number copied!')">📞 Copy Phone</button>
-                            <button class="copy-btn" onclick="window.close()">❌ Close</button>
-                            
-                            <h3>Instructions:</h3>
-                            <ol>
-                                <li>Copy the message and phone number using the buttons above</li>
-                                <li>Open your phone's messaging app</li>
-                                <li>Create a new message to the copied phone number</li>
-                                <li>Paste the copied message and send!</li>
-                            </ol>
-                        </div>
-                    </body>
-                    </html>
-                `);
-                showAlert('SMS reminder window opened with message details', 'info');
-            }
-        }
-
-        function loadCleaningData() {
-            try {
-                const saved = localStorage.getItem('capeCoralCleaning');
-                if (saved) {
-                    const cleaningData = JSON.parse(saved);
-                    document.getElementById('cleaning-company').value = cleaningData.company || 'Cape Coral Cleaning Services';
-                    document.getElementById('cleaning-phone').value = cleaningData.phone || '(239) 555-0199';
-                    document.getElementById('cleaning-date').value = cleaningData.date || '';
-                    document.getElementById('cleaning-time').value = cleaningData.time || '11:30';
-                    document.getElementById('cleaning-checklist').value = cleaningData.checklist || document.getElementById('cleaning-checklist').value;
-                }
-                
-                // Load trash data
-                const savedTrash = localStorage.getItem('capeCoralTrash');
-                if (savedTrash) {
-                    const trashData = JSON.parse(savedTrash);
-                    document.getElementById('trash-instructions').value = trashData.instructions || document.getElementById('trash-instructions').value;
-                    updateTrashStatus(trashData.status || 'pending');
-                }
-            } catch (error) {
-                console.log('No saved cleaning/trash data found');
-            }
-        }
-
-        // Trash Management Functions
-        function sendTrashReminder() {
-            const guestName = guestData.guestName;
-            const instructions = document.getElementById('trash-instructions').value;
-            
-            // Create reminder message
-            const message = `Hi ${guestName}!
-
-Friendly reminder about trash pickup at Cape Coral Home Retreat:
-
-🗑️ TRASH PICKUP: Monday morning
-📅 ACTION NEEDED: Please take bins to curb Sunday evening
-
-📍 Bin Location: Right side of house next to AC units
-
-${instructions}
-
-Thank you for helping keep our property clean!`;
-            
-            // For now, show the message (in real app, this could send SMS/email)
-            const reminderWindow = window.open('', 'TrashReminder', 'width=500,height=400');
-            reminderWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Trash Pickup Reminder</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; background: #f8fafc; }
-                        .container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-                        .message-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; white-space: pre-line; border-left: 4px solid #F77F00; }
-                        .copy-btn { background: #F77F00; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 5px; }
-                        .copy-btn:hover { background: #D97706; }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <h2>🗑️ Trash Pickup Reminder</h2>
-                        <p><strong>For:</strong> ${guestName}</p>
-                        
-                        <h3>Message:</h3>
-                        <div class="message-box">${message}</div>
-                        
-                        <button class="copy-btn" onclick="navigator.clipboard.writeText('${message}'); alert('Message copied!')">📋 Copy Message</button>
-                        <button class="copy-btn" onclick="window.close()">❌ Close</button>
-                        
-                        <p><strong>Note:</strong> Copy this message to send via your preferred method (SMS, email, etc.)</p>
-                    </div>
-                </body>
-                </html>
-            `);
-            
-            showAlert('Trash reminder prepared for guest', 'success');
-        }
-
-        function markTrashCompleted() {
-            updateTrashStatus('completed');
-            saveTrashInfo();
-            showAlert('Trash pickup marked as completed', 'success');
-        }
-
-        function updateTrashStatus(status) {
-            const statusEl = document.getElementById('trash-status');
-            if (statusEl) {
-                if (status === 'completed') {
-                    statusEl.textContent = 'Completed';
-                    statusEl.style.background = '#d1fae5';
-                    statusEl.style.color = '#065f46';
-                } else {
-                    statusEl.textContent = 'Pending';
-                    statusEl.style.background = '#fef3c7';
-                    statusEl.style.color = '#92400e';
-                }
-            }
-        }
-
-        function saveTrashInfo() {
-            const instructions = document.getElementById('trash-instructions').value;
-            const statusEl = document.getElementById('trash-status');
-            const status = statusEl ? statusEl.textContent.toLowerCase() : 'pending';
-            
-            const trashData = {
-                instructions,
-                status,
-                lastUpdated: new Date().toISOString()
-            };
-            
-            try {
-                localStorage.setItem('capeCoralTrash', JSON.stringify(trashData));
-                showAlert('Trash information saved successfully!', 'success');
-            } catch (error) {
-                showAlert('Could not save trash data', 'error');
-            }
-        }
-
-        // Airbnb CSV Import Functions
-        function processAirbnbCSV() {
-            const fileInput = document.getElementById('airbnb-csv');
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    const csv = e.target.result;
-                    displayCSVPreview(csv);
-                    document.getElementById('parse-btn').style.display = 'inline-block';
-                };
-                
-                reader.readAsText(file);
-            }
-        }
-
-        function displayCSVPreview(csv) {
-            const lines = csv.split('\n');
-            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-            
-            // Show first few lines as preview
-            let previewHTML = '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">';
-            previewHTML += '<strong>CSV Headers Found:</strong><br>';
-            previewHTML += headers.join(', ');
-            previewHTML += '</div>';
-            
-            previewHTML += '<div style="background: #e8f4fd; padding: 15px; border-radius: 8px; margin: 15px 0;">';
-            previewHTML += '<strong>Preview:</strong><br>';
-            previewHTML += `Found ${lines.length - 1} booking records`;
-            previewHTML += '</div>';
-            
-            document.getElementById('csv-data').innerHTML = previewHTML;
-            document.getElementById('csv-preview').style.display = 'block';
-            
-            // Store CSV data for processing
-            window.csvData = csv;
-        }
-
-        function parseAirbnbData() {
-            if (!window.csvData) {
-                showAlert('No CSV data to process', 'error');
-                return;
-            }
-            
-            const lines = window.csvData.split('\n');
-            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-            const bookings = [];
-            
-            // Parse CSV data
-            for (let i = 1; i < lines.length; i++) {
-                if (lines[i].trim()) {
-                    const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
-                    const booking = {};
-                    
-                    headers.forEach((header, index) => {
-                        booking[header] = values[index] || '';
-                    });
-                    
-                    if (booking['Guest name'] || booking['Guest Name']) {
-                        bookings.push(booking);
-                    }
-                }
-            }
-            
-            if (bookings.length === 0) {
-                showAlert('No valid bookings found in CSV', 'error');
-                return;
-            }
-            
-            displayBookingsList(bookings);
-        }
-
-        function displayBookingsList(bookings) {
-            let html = '<h4>📋 Select a Booking to Import:</h4>';
-            html += '<div style="max-height: 400px; overflow-y: auto;">';
-            
-            bookings.forEach((booking, index) => {
-                // Try different possible column names from Airbnb CSV
-                const guestName = booking['Guest name'] || booking['Guest Name'] || booking['Guest'] || 'Unknown Guest';
-                const checkIn = booking['Start date'] || booking['Check-in'] || booking['Checkin'] || booking['Check in'] || '';
-                const checkOut = booking['End date'] || booking['Check-out'] || booking['Checkout'] || booking['Check out'] || '';
-                const confirmation = booking['Confirmation code'] || booking['Confirmation Code'] || booking['Confirmation'] || `BK${Date.now()}${index}`;
-                const nights = booking['Nights'] || booking['# of nights'] || 'N/A';
-                
-                // Better guest count calculation for display
-                let guestCount = 0;
-                const adults = parseInt(booking['# of adults'] || booking['Adults'] || 0);
-                const children = parseInt(booking['# of children'] || booking['Children'] || 0);
-                const infants = parseInt(booking['# of infants'] || booking['Infants'] || 0);
-                const totalGuests = parseInt(booking['Guests'] || booking['Guest count'] || booking['# of guests'] || 0);
-                
-                if (totalGuests > 0) {
-                    guestCount = totalGuests;
-                } else if (adults > 0 || children > 0 || infants > 0) {
-                    guestCount = adults + children + infants;
-                } else {
-                    guestCount = 2; // Default
-                }
-                
-                // Show breakdown if available
-                let guestDisplay = `${guestCount} total`;
-                if (adults > 0 || children > 0 || infants > 0) {
-                    const breakdown = [];
-                    if (adults > 0) breakdown.push(`${adults} adults`);
-                    if (children > 0) breakdown.push(`${children} children`);
-                    if (infants > 0) breakdown.push(`${infants} infants`);
-                    guestDisplay = `${guestCount} total (${breakdown.join(', ')})`;
-                }
-                
-                html += `
-                    <div style="background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; cursor: pointer; transition: all 0.2s ease;" 
-                         onclick="importBooking(${index})" onmouseover="this.style.background='#e8f4fd'" onmouseout="this.style.background='#f8f9fa'">
-                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; align-items: center;">
-                            <div>
-                                <strong style="color: #1f2937;">${guestName}</strong><br>
-                                <small style="color: #6b7280;">Confirmation: ${confirmation}</small>
-                            </div>
-                            <div>
-                                <strong>Check-in:</strong><br>
-                                <span style="color: #059669;">${formatDate(checkIn)}</span>
-                            </div>
-                            <div>
-                                <strong>Check-out:</strong><br>
-                                <span style="color: #dc2626;">${formatDate(checkOut)}</span>
-                            </div>
-                            <button class="btn" style="font-size: 12px; padding: 6px 12px;">Import</button>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 14px; color: #6b7280;">
-                            ${guestDisplay} • ${nights} nights
-                        </div>
-                    </div>
-                `;
-            });
-            
-            html += '</div>';
-            document.getElementById('csv-data').innerHTML = html;
-            
-            // Store bookings for import
-            window.parsedBookings = bookings;
-        }
-
-        function importBooking(index) {
-            const booking = window.parsedBookings[index];
-            
-            // Map Airbnb CSV fields to our form fields
-            const guestName = booking['Guest name'] || booking['Guest Name'] || booking['Guest'] || 'Unknown Guest';
-            const checkIn = booking['Start date'] || booking['Check-in'] || booking['Checkin'] || booking['Check in'] || '';
-            const checkOut = booking['End date'] || booking['Check-out'] || booking['Checkout'] || booking['Check out'] || '';
-            const confirmation = booking['Confirmation code'] || booking['Confirmation Code'] || booking['Confirmation'] || `BK${Date.now()}`;
-            
-            // Better guest count calculation - try multiple field names
-            let guestCount = 0;
-            const adults = parseInt(booking['# of adults'] || booking['Adults'] || booking['Number of adults'] || 0);
-            const children = parseInt(booking['# of children'] || booking['Children'] || booking['Number of children'] || 0);
-            const infants = parseInt(booking['# of infants'] || booking['Infants'] || booking['Number of infants'] || 0);
-            const totalGuests = parseInt(booking['Guests'] || booking['Guest count'] || booking['# of guests'] || booking['Total guests'] || 0);
-            
-            // Use total if available, otherwise calculate from breakdown
-            if (totalGuests > 0) {
-                guestCount = totalGuests;
-            } else if (adults > 0 || children > 0 || infants > 0) {
-                guestCount = adults + children + infants;
-            } else {
-                guestCount = 2; // Default fallback
-            }
-            
-            // Generate new door code first
-            const newDoorCode = Math.floor(1000 + Math.random() * 9000).toString();
-            
-            // Update form fields
-            document.getElementById('admin-guest-name').value = guestName;
-            document.getElementById('admin-guest-count').value = guestCount;
-            document.getElementById('admin-checkin').value = formatDateForInput(checkIn);
-            document.getElementById('admin-checkout').value = formatDateForInput(checkOut);
-            document.getElementById('admin-confirmation').value = confirmation;
-            document.getElementById('admin-door-code').value = newDoorCode;
-            
-            // DIRECTLY update guestData object
-            guestData.guestName = guestName;
-            guestData.guestCount = parseInt(guestCount); // Ensure it's a number
-            guestData.confirmation = confirmation;
-            guestData.doorCode = newDoorCode;
-            
-            // Store raw dates for admin form
-            guestData.rawCheckIn = formatDateForInput(checkIn);
-            guestData.rawCheckOut = formatDateForInput(checkOut);
-            
-            // Format dates for display
-            if (checkIn) {
-                guestData.checkIn = new Date(checkIn).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-            }
-            if (checkOut) {
-                guestData.checkOut = new Date(checkOut).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-            }
-            
-            // Save to localStorage IMMEDIATELY
-            try {
-                localStorage.setItem('capeCoralGuestData', JSON.stringify(guestData));
-                console.log('Imported guest data:', guestData); // Debug log
-            } catch (error) {
-                console.log('Could not save guest data');
-            }
-            
-            // Update displays
-            updateDisplays();
-            
-            showAlert(`Successfully imported: ${guestName} (${guestCount} guests) - Door code: ${newDoorCode}`, 'success');
-            
-            // Hide the import section
-            document.getElementById('csv-preview').style.display = 'none';
-            document.getElementById('parse-btn').style.display = 'none';
-            document.getElementById('airbnb-csv').value = '';
-        }
-
-        function formatDate(dateStr) {
-            if (!dateStr) return 'Not specified';
-            try {
-                const date = new Date(dateStr);
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            } catch (e) {
-                return dateStr;
-            }
-        }
-
-        function formatDateForInput(dateStr) {
-            if (!dateStr) return '';
-            try {
-                const date = new Date(dateStr);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            } catch (e) {
-                return '';
-            }
-        }
-
-        function generateNewDoorCode() {
-            const code = Math.floor(1000 + Math.random() * 9000).toString();
-            document.getElementById('admin-door-code').value = code;
-            showAlert(`New door code generated: ${code}`, 'info');
-        }
-
         // Property Photo Upload Functions
         function uploadPropertyPhoto() {
             const fileInput = document.getElementById('property-photo');
@@ -1602,10 +1149,12 @@ Thank you for helping keep our property clean!`;
 
         function updatePropertyPhotoDisplay(imageData) {
             const photoDisplay = document.getElementById('property-photo-display');
-            photoDisplay.innerHTML = `
-                <img src="${imageData}" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" alt="Cape Coral Home Retreat - Your beautiful tropical property">
-                <p class="small-text" style="margin-top: 10px; color: #6B7280;">Your beautiful tropical retreat in Cape Coral, Florida</p>
-            `;
+            if (photoDisplay) {
+                photoDisplay.innerHTML = `
+                    <img src="${imageData}" class="property-photo" alt="Cape Coral Home Retreat - Your beautiful tropical property">
+                    <p class="small-text" style="margin-top: 10px; color: #6B7280; text-align: center;">Your beautiful tropical retreat in Cape Coral, Florida</p>
+                `;
+            }
         }
 
         function removePropertyPhoto() {
@@ -1617,12 +1166,14 @@ Thank you for helping keep our property clean!`;
             
             // Reset guest display
             const photoDisplay = document.getElementById('property-photo-display');
-            photoDisplay.innerHTML = `
-                <div style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); padding: 40px 20px; border-radius: 12px; border: 2px dashed #00B4D8;">
-                    <h3 style="color: #00B4D8; margin-bottom: 10px;">🏖️ Property Photo</h3>
-                    <p style="color: #6B7280; margin: 0;">Upload a photo in the admin panel to showcase your beautiful property here!</p>
-                </div>
-            `;
+            if (photoDisplay) {
+                photoDisplay.innerHTML = `
+                    <div class="photo-placeholder">
+                        <h3>🏖️ Property Photo</h3>
+                        <p>Upload a photo in the admin panel to showcase your beautiful property here!</p>
+                    </div>
+                `;
+            }
             
             showAlert('Property photo removed', 'info');
         }
@@ -1639,130 +1190,11 @@ Thank you for helping keep our property clean!`;
             }
         }
 
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load saved guest data first (local backup)
-            try {
-                const savedGuestData = localStorage.getItem('capeCoralGuestData');
-                if (savedGuestData) {
-                    guestData = { ...guestData, ...JSON.parse(savedGuestData) };
-                }
-            } catch (error) {
-                console.log('No saved guest data found, using defaults');
+        // Cleaning Management Functions
+        function scheduleCleaningFromCheckout() {
+            const checkOutDate = document.getElementById('admin-checkout').value;
+            if (checkOutDate) {
+                document.getElementById('cleaning-date').value = checkOutDate;
+                document.getElementById('cleaning-time').value = '11:30';
+                showAlert('Cleaning automatically scheduled for 30 minutes after checkout!', 'success');
             }
-            
-            // Update displays with loaded data
-            updateDisplays();
-            
-            // Try to load current booking from GitHub data (async)
-            loadCurrentBookingFromGitHub();
-            
-            // Improved admin toggle with Ctrl+Shift+A
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                    const adminBtn = document.getElementById('admin-btn');
-                    if (adminBtn.style.display === 'none' || adminBtn.style.display === '') {
-                        adminBtn.style.display = 'inline-block';
-                        showAlert('Admin access enabled', 'success');
-                    } else {
-                        adminBtn.style.display = 'none';
-                        // If currently in admin mode, logout
-                        if (document.getElementById('admin-nav').style.display === 'flex') {
-                            logout();
-                        }
-                        showAlert('Admin access hidden', 'info');
-                    }
-                    e.preventDefault();
-                }
-            });
-            
-            showPage('home');
-            const firstBtn = document.querySelector('.btn');
-            if (firstBtn) firstBtn.classList.add('active');
-        });
-
-        // Load current booking from GitHub data file
-        async function loadCurrentBookingFromGitHub() {
-            try {
-                // Try to load from the GitHub Pages data file
-                const response = await fetch('./data/current-booking.json');
-                if (response.ok) {
-                    const bookingData = await response.json();
-                    
-                    // Update guestData with GitHub data
-                    if (bookingData.guestName) guestData.guestName = bookingData.guestName;
-                    if (bookingData.checkIn) guestData.checkIn = formatDateFromGitHub(bookingData.checkIn);
-                    if (bookingData.checkOut) guestData.checkOut = formatDateFromGitHub(bookingData.checkOut);
-                    if (bookingData.guests) guestData.guestCount = bookingData.guests;
-                    if (bookingData.confirmation) guestData.confirmation = bookingData.confirmation;
-                    if (bookingData.doorCode) guestData.doorCode = bookingData.doorCode;
-                    if (bookingData.wifiName) guestData.wifiName = bookingData.wifiName;
-                    if (bookingData.wifiPassword) guestData.wifiPassword = bookingData.wifiPassword;
-                    
-                    // Store raw dates for admin
-                    if (bookingData.checkIn) guestData.rawCheckIn = bookingData.checkIn;
-                    if (bookingData.checkOut) guestData.rawCheckOut = bookingData.checkOut;
-                    
-                    // Save the updated data
-                    localStorage.setItem('capeCoralGuestData', JSON.stringify(guestData));
-                    
-                    // Update displays with new data
-                    updateDisplays();
-                    
-                    console.log('Loaded booking data from GitHub:', bookingData);
-                    showAlert('✅ Booking data updated from PMS', 'success');
-                } else {
-                    console.log('No GitHub booking data found, using local data');
-                }
-            } catch (error) {
-                console.log('Could not load GitHub booking data:', error);
-                // Fallback to local data - no error message for users
-            }
-        }
-
-        // Format date from GitHub data (YYYY-MM-DD) to display format
-        function formatDateFromGitHub(dateStr) {
-            try {
-                const date = new Date(dateStr);
-                return date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-            } catch (error) {
-                return dateStr; // Return as-is if parsing fails
-            }
-        }
-
-        // Update GitHub data when admin makes changes
-        async function syncToGitHub() {
-            const bookingData = {
-                guestName: guestData.guestName,
-                checkIn: guestData.rawCheckIn || '2025-07-18',
-                checkOut: guestData.rawCheckOut || '2025-07-21',
-                guests: parseInt(guestData.guestCount),
-                doorCode: guestData.doorCode,
-                confirmation: guestData.confirmation,
-                wifiName: guestData.wifiName,
-                wifiPassword: guestData.wifiPassword,
-                lastUpdated: new Date().toISOString()
-            };
-            
-            // In a real implementation, this would call the GitHub API
-            // For now, just show what would be sent
-            console.log('Would sync to GitHub:', bookingData);
-            showAlert('Data prepared for PMS sync', 'info');
-        }
-
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
-</body>
-</html>
