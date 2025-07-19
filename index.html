@@ -30,11 +30,11 @@
             border-top: 2px solid #FFB74D;
         }
         .btn {
-            background: linear-gradient(135deg, #00BCD4, #0097A7);
+            background: #00BCD4;
             color: white;
             padding: 12px 24px;
             border: none;
-            border-radius: 10px;
+            border-radius: 0;
             margin: 5px;
             cursor: pointer;
             border-bottom: 4px solid #FF9800;
@@ -44,7 +44,7 @@
             box-shadow: 0 2px 8px rgba(0,188,212,0.3);
         }
         .btn:hover {
-            background: linear-gradient(135deg, #0097A7, #00838F);
+            background: #0097A7;
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0,188,212,0.4);
         }
@@ -52,26 +52,26 @@
             transform: translateY(0);
         }
         .btn.active {
-            background: linear-gradient(135deg, #00838F, #006064);
+            background: #00838F;
             border-bottom-color: #F57C00;
             box-shadow: 0 3px 10px rgba(0,131,143,0.5);
         }
         .btn-danger {
-            background: linear-gradient(135deg, #E91E63, #C2185B);
+            background: #E91E63;
             border-bottom-color: #AD1457;
             box-shadow: 0 2px 8px rgba(233,30,99,0.3);
         }
         .btn-danger:hover {
-            background: linear-gradient(135deg, #C2185B, #AD1457);
+            background: #C2185B;
             box-shadow: 0 4px 12px rgba(233,30,99,0.4);
         }
         .btn-success {
-            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            background: #4CAF50;
             border-bottom-color: #2E7D32;
             box-shadow: 0 2px 8px rgba(76,175,80,0.3);
         }
         .btn-success:hover {
-            background: linear-gradient(135deg, #388E3C, #2E7D32);
+            background: #388E3C;
             box-shadow: 0 4px 12px rgba(76,175,80,0.4);
         }
         .card {
@@ -94,6 +94,17 @@
             border-left-color: #E91E63;
             border-top: 1px solid rgba(233,30,99,0.2);
             padding: 30px;
+        }
+        .emergency-card h3 {
+            margin: 0 0 15px 0;
+            color: #00695C;
+        }
+        .emergency-card p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .emergency-card .small-text {
+            margin-top: 10px;
         }
         .attraction-card {
             background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
@@ -246,18 +257,92 @@
             color: #00BCD4;
             margin-bottom: 10px;
         }
-        .property-photo {
-            width: 100%;
-            max-width: 100%;
-            height: auto;
-            border-radius: 15px;
-            box-shadow: 0 6px 25px rgba(0,188,212,0.2);
-            transition: transform 0.2s ease;
-            border: 3px solid rgba(255,152,0,0.3);
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
         }
-        .property-photo:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 30px rgba(0,188,212,0.3);
+        .photo-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,188,212,0.15);
+            transition: transform 0.2s ease;
+            border: 2px solid rgba(255,152,0,0.2);
+        }
+        .photo-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,188,212,0.25);
+        }
+        .photo-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .photo-item img:hover {
+            transform: scale(1.05);
+        }
+        .photo-caption {
+            padding: 12px 15px;
+            color: #546E7A;
+            font-size: 14px;
+            text-align: center;
+            background: linear-gradient(135deg, #FAFAFA, #F0F4F8);
+        }
+        .photo-upload-area {
+            border: 2px dashed #00BCD4;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #E0F2F1, #B2DFDB);
+            color: #546E7A;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .photo-upload-area:hover {
+            border-color: #0097A7;
+            background: linear-gradient(135deg, #B2DFDB, #80CBC4);
+        }
+        .photo-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+        }
+        .photo-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .photo-modal img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .photo-close {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .photo-admin-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
         }
         @media (max-width: 768px) {
             body {
@@ -392,14 +477,22 @@
                 <p style="color: white; opacity: 0.9;">Take a virtual tour of your beautiful tropical retreat!</p>
             </div>
             
-            <!-- This is where the property photo will be displayed -->
+            <!-- This is where the property photos will be displayed -->
             <div class="card">
-                <h3>🏠 Your Beautiful Property</h3>
+                <h3>🏠 Property Photo Gallery</h3>
                 <div id="property-photo-display">
                     <div class="photo-placeholder">
-                        <h3>🏖️ Property Photo</h3>
-                        <p>Upload a photo in the admin panel to showcase your beautiful property here!</p>
+                        <h3>🏖️ No Photos Yet</h3>
+                        <p>Upload photos in the admin panel to showcase your beautiful property here!</p>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Photo Modal for full-size viewing -->
+            <div id="photo-modal" class="photo-modal" onclick="closePhotoModal()">
+                <span class="photo-close" onclick="closePhotoModal()">&times;</span>
+                <div class="photo-modal-content">
+                    <img id="modal-image" src="" alt="Property Photo">
                 </div>
             </div>
             
@@ -724,6 +817,31 @@
             <h2>⚙️ Admin Settings</h2>
             
             <div class="admin-card card">
+                <h3>🔐 Security Settings</h3>
+                
+                <div class="form-group">
+                    <label>Change Admin Password</label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="password" id="current-password" placeholder="Current Password">
+                            <p class="small-text">Enter your current admin password</p>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="new-password" placeholder="New Password">
+                            <p class="small-text">Enter new password (minimum 6 characters)</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="confirm-password" placeholder="Confirm New Password">
+                        <p class="small-text">Re-enter new password to confirm</p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-success" onclick="changeAdminPassword()">🔑 Update Password</button>
+                <button class="btn" onclick="resetToDefaultPassword()" style="background: #FF5722; border-bottom-color: #D84315;">🔄 Reset to Default</button>
+            </div>
+
+            <div class="admin-card card">
                 <h3>WiFi Settings</h3>
                 <div class="form-row">
                     <div class="form-group">
@@ -739,6 +857,25 @@
             </div>
 
             <div class="admin-card card">
+                <h3>Property Photos</h3>
+                <div class="form-group">
+                    <label>Upload Property Photos</label>
+                    <div class="photo-upload-area" onclick="document.getElementById('property-photos').click()">
+                        <h4>📸 Click to Upload Photos</h4>
+                        <p>Upload multiple photos to showcase your property</p>
+                        <p class="small-text">Supported: JPG, PNG, WebP (max 5MB each)</p>
+                    </div>
+                    <input type="file" id="property-photos" accept="image/*" multiple style="display: none;" onchange="uploadPropertyPhotos()">
+                </div>
+                
+                <div id="admin-photo-gallery" class="photo-grid">
+                    <!-- Uploaded photos will appear here -->
+                </div>
+                
+                <button class="btn btn-danger" onclick="clearAllPhotos()" style="margin-top: 15px;">🗑️ Clear All Photos</button>
+            </div>
+
+            <div class="admin-card card">
                 <h3>Property Information</h3>
                 <div class="form-group">
                     <label>Property Name</label>
@@ -747,15 +884,6 @@
                 <div class="form-group">
                     <label>Property Address</label>
                     <input type="text" id="admin-property-address" value="123 SW 51st Terrace, Cape Coral, Florida">
-                </div>
-                
-                <div class="form-group">
-                    <label>Property Photo</label>
-                    <input type="file" id="property-photo" accept="image/*" onchange="uploadPropertyPhoto()">
-                    <p class="small-text">Upload a photo of your property to display on the welcome page</p>
-                    <div id="photo-preview" style="margin-top: 15px;">
-                        <!-- Photo preview will appear here -->
-                    </div>
                 </div>
                 
                 <button class="btn btn-success" onclick="updatePropertyInfo()">Update Property Info</button>
@@ -800,7 +928,9 @@
 
         function login() {
             const password = document.getElementById('admin-password').value;
-            if (password === 'admin1128') {
+            const savedPassword = localStorage.getItem('adminPassword') || 'admin1128';
+            
+            if (password === savedPassword) {
                 document.getElementById('guest-nav').style.display = 'none';
                 document.getElementById('admin-nav').style.display = 'flex';
                 showPage('admin-dashboard');
@@ -1065,82 +1195,277 @@
             showAlert(`Opening ${playlistNames[type]} playlist! Remember to select "Cape Coral Retreat Audio" as your device.`, 'success');
         }
 
-        // Property Photo Upload Functions
-        function uploadPropertyPhoto() {
-            const fileInput = document.getElementById('property-photo');
+        // Property Photos Upload Functions (Multiple Photos)
+        function uploadPropertyPhotos() {
+            const fileInput = document.getElementById('property-photos');
             if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const reader = new FileReader();
+                const files = Array.from(fileInput.files);
+                let existingPhotos = [];
                 
-                reader.onload = function(e) {
-                    const imageData = e.target.result;
-                    
-                    try {
-                        localStorage.setItem('propertyPhoto', imageData);
-                        showAlert('Property photo uploaded successfully!', 'success');
-                    } catch (error) {
-                        showAlert('Photo file too large. Please use a smaller image.', 'error');
+                try {
+                    const saved = localStorage.getItem('propertyPhotos');
+                    if (saved) {
+                        existingPhotos = JSON.parse(saved);
+                    }
+                } catch (error) {
+                    existingPhotos = [];
+                }
+                
+                let successCount = 0;
+                let errorCount = 0;
+                
+                files.forEach((file, index) => {
+                    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                        errorCount++;
                         return;
                     }
                     
-                    displayPhotoPreview(imageData);
-                    updatePropertyPhotoDisplay(imageData);
-                };
-                
-                reader.readAsDataURL(file);
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageData = e.target.result;
+                        const photoObj = {
+                            id: Date.now() + index,
+                            data: imageData,
+                            name: file.name,
+                            caption: file.name.split('.')[0].replace(/[-_]/g, ' ')
+                        };
+                        
+                        existingPhotos.push(photoObj);
+                        
+                        try {
+                            localStorage.setItem('propertyPhotos', JSON.stringify(existingPhotos));
+                            successCount++;
+                            
+                            if (successCount + errorCount === files.length) {
+                                if (successCount > 0) {
+                                    showAlert(`${successCount} photo(s) uploaded successfully!`, 'success');
+                                    updatePhotoDisplays();
+                                }
+                                if (errorCount > 0) {
+                                    showAlert(`${errorCount} photo(s) were too large (max 5MB)`, 'error');
+                                }
+                            }
+                        } catch (error) {
+                            errorCount++;
+                            if (successCount + errorCount === files.length) {
+                                showAlert('Storage full. Please remove some photos first.', 'error');
+                            }
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
             }
+        }
+
+        function updatePhotoDisplays() {
+            updateGuestPhotoGallery();
+            updateAdminPhotoGallery();
+        }
+
+        function updateGuestPhotoGallery() {
+            try {
+                const saved = localStorage.getItem('propertyPhotos');
+                const photos = saved ? JSON.parse(saved) : [];
+                const photoDisplay = document.getElementById('property-photo-display');
+                
+                if (photos.length === 0) {
+                    photoDisplay.innerHTML = `
+                        <div class="photo-placeholder">
+                            <h3>🏖️ No Photos Yet</h3>
+                            <p>Upload photos in the admin panel to showcase your beautiful property here!</p>
+                        </div>
+                    `;
+                } else {
+                    let html = '<div class="photo-grid">';
+                    photos.forEach(photo => {
+                        html += `
+                            <div class="photo-item">
+                                <img src="${photo.data}" alt="${photo.caption}" onclick="openPhotoModal('${photo.data}')">
+                                <div class="photo-caption">${photo.caption}</div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    photoDisplay.innerHTML = html;
+                }
+            } catch (error) {
+                console.log('Error loading photos');
+            }
+        }
+
+        function updateAdminPhotoGallery() {
+            try {
+                const saved = localStorage.getItem('propertyPhotos');
+                const photos = saved ? JSON.parse(saved) : [];
+                const adminGallery = document.getElementById('admin-photo-gallery');
+                
+                if (photos.length === 0) {
+                    adminGallery.innerHTML = '<p style="text-align: center; color: #546E7A; padding: 20px;">No photos uploaded yet</p>';
+                } else {
+                    let html = '';
+                    photos.forEach(photo => {
+                        html += `
+                            <div class="photo-item">
+                                <img src="${photo.data}" alt="${photo.caption}">
+                                <div class="photo-caption">${photo.caption}</div>
+                                <div class="photo-admin-controls">
+                                    <input type="text" value="${photo.caption}" onchange="updatePhotoCaption(${photo.id}, this.value)" style="flex: 1; margin-right: 10px; padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <button class="btn btn-danger" onclick="deletePhoto(${photo.id})" style="font-size: 12px; padding: 4px 8px;">🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    adminGallery.innerHTML = html;
+                }
+            } catch (error) {
+                console.log('Error loading admin photos');
+            }
+        }
+
+        function updatePhotoCaption(photoId, newCaption) {
+            try {
+                const saved = localStorage.getItem('propertyPhotos');
+                let photos = saved ? JSON.parse(saved) : [];
+                
+                photos = photos.map(photo => {
+                    if (photo.id === photoId) {
+                        photo.caption = newCaption;
+                    }
+                    return photo;
+                });
+                
+                localStorage.setItem('propertyPhotos', JSON.stringify(photos));
+                updatePhotoDisplays();
+                showAlert('Caption updated', 'success');
+            } catch (error) {
+                showAlert('Failed to update caption', 'error');
+            }
+        }
+
+        function deletePhoto(photoId) {
+            try {
+                const saved = localStorage.getItem('propertyPhotos');
+                let photos = saved ? JSON.parse(saved) : [];
+                
+                photos = photos.filter(photo => photo.id !== photoId);
+                
+                localStorage.setItem('propertyPhotos', JSON.stringify(photos));
+                updatePhotoDisplays();
+                showAlert('Photo deleted', 'info');
+            } catch (error) {
+                showAlert('Failed to delete photo', 'error');
+            }
+        }
+
+        function clearAllPhotos() {
+            if (confirm('Are you sure you want to delete all photos? This cannot be undone.')) {
+                localStorage.removeItem('propertyPhotos');
+                updatePhotoDisplays();
+                showAlert('All photos cleared', 'info');
+            }
+        }
+
+        function openPhotoModal(imageSrc) {
+            document.getElementById('modal-image').src = imageSrc;
+            document.getElementById('photo-modal').style.display = 'block';
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photo-modal').style.display = 'none';
+        }
+
+        // Legacy single photo functions (keeping for compatibility)
+        function uploadPropertyPhoto() {
+            showAlert('Please use the new multi-photo gallery above', 'info');
         }
 
         function displayPhotoPreview(imageData) {
-            const previewDiv = document.getElementById('photo-preview');
-            previewDiv.innerHTML = `
-                <div style="text-align: center;">
-                    <img src="${imageData}" style="max-width: 300px; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" alt="Property Photo Preview">
-                    <p style="margin: 10px 0; color: #059669; font-weight: bold;">✅ Photo uploaded successfully!</p>
-                    <button class="btn btn-danger" onclick="removePropertyPhoto()" style="font-size: 12px; padding: 6px 12px;">Remove Photo</button>
-                </div>
-            `;
+            // Legacy function - no longer used
         }
 
         function updatePropertyPhotoDisplay(imageData) {
-            const photoDisplay = document.getElementById('property-photo-display');
-            if (photoDisplay) {
-                photoDisplay.innerHTML = `
-                    <img src="${imageData}" class="property-photo" alt="Cape Coral Home Retreat - Your beautiful tropical property">
-                    <p class="small-text" style="margin-top: 10px; color: #6B7280; text-align: center;">Your beautiful tropical retreat in Cape Coral, Florida</p>
-                `;
-            }
+            // Legacy function - no longer used
         }
 
         function removePropertyPhoto() {
-            localStorage.removeItem('propertyPhoto');
-            
-            document.getElementById('photo-preview').innerHTML = '';
-            document.getElementById('property-photo').value = '';
-            
-            const photoDisplay = document.getElementById('property-photo-display');
-            if (photoDisplay) {
-                photoDisplay.innerHTML = `
-                    <div class="photo-placeholder">
-                        <h3>🏖️ Property Photo</h3>
-                        <p>Upload a photo in the admin panel to showcase your beautiful property here!</p>
-                    </div>
-                `;
-            }
-            
-            showAlert('Property photo removed', 'info');
+            // Legacy function - no longer used
         }
 
         function loadPropertyPhoto() {
-            try {
-                const savedPhoto = localStorage.getItem('propertyPhoto');
-                if (savedPhoto) {
-                    updatePropertyPhotoDisplay(savedPhoto);
-                    displayPhotoPreview(savedPhoto);
-                }
-            } catch (error) {
-                console.log('No saved property photo found');
+            // Load photos on page initialization
+            updatePhotoDisplays();
+        }
+
+        function changeAdminPassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const savedPassword = localStorage.getItem('adminPassword') || 'admin1128';
+            
+            // Validation
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showAlert('Please fill in all password fields', 'error');
+                return;
             }
+            
+            if (currentPassword !== savedPassword) {
+                showAlert('Current password is incorrect', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showAlert('New password must be at least 6 characters long', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showAlert('New passwords do not match', 'error');
+                return;
+            }
+            
+            if (newPassword === currentPassword) {
+                showAlert('New password must be different from current password', 'error');
+                return;
+            }
+            
+            // Save new password
+            try {
+                localStorage.setItem('adminPassword', newPassword);
+                
+                // Clear form fields
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                
+                showAlert('Admin password updated successfully! Please remember your new password.', 'success');
+            } catch (error) {
+                showAlert('Failed to save new password', 'error');
+            }
+        }
+
+        function resetToDefaultPassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const savedPassword = localStorage.getItem('adminPassword') || 'admin1128';
+            
+            if (!currentPassword) {
+                showAlert('Please enter your current password to reset', 'error');
+                return;
+            }
+            
+            if (currentPassword !== savedPassword) {
+                showAlert('Current password is incorrect', 'error');
+                return;
+            }
+            
+            // Reset to default
+            localStorage.setItem('adminPassword', 'admin1128');
+            
+            // Clear form fields
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            
+            showAlert('Password reset to default (admin1128)', 'success');
         }
 
         function generateNewDoorCode() {
@@ -1157,8 +1482,6 @@
         function parseAirbnbData() {
             showAlert('CSV processing feature available in full version', 'info');
         }
-
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Load saved guest data
             try {
