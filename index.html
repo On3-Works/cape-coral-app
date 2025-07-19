@@ -770,7 +770,7 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
 
         function showPage(pageId, buttonElement) {
             // Hide all pages
-            const pages = ['home', 'access', 'attractions', 'music', 'rules', 'emergency', 'admin-login', 'admin-dashboard', 'admin-settings'];
+            const pages = ['home', 'access', 'attractions', 'photos', 'music', 'rules', 'emergency', 'admin-login', 'admin-dashboard', 'admin-settings'];
             pages.forEach(page => {
                 const element = document.getElementById(page + '-page');
                 if (element) element.style.display = 'none';
@@ -812,14 +812,30 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
         }
 
         function loadAdminData() {
+            // Load current guest data into admin form
             document.getElementById('admin-guest-name').value = guestData.guestName;
             document.getElementById('admin-guest-count').value = guestData.guestCount;
-            document.getElementById('admin-checkin').value = '2025-07-18';
-            document.getElementById('admin-checkout').value = '2025-07-21';
             document.getElementById('admin-confirmation').value = guestData.confirmation;
             document.getElementById('admin-door-code').value = guestData.doorCode;
-            document.getElementById('admin-wifi-name').value = 'CapeRetreatGuest';
-            document.getElementById('admin-wifi-password').value = 'HavingFun2025';
+            document.getElementById('admin-wifi-name').value = guestData.wifiName;
+            document.getElementById('admin-wifi-password').value = guestData.wifiPassword;
+            
+            // Convert formatted dates back to input format for admin form
+            const checkinInput = document.getElementById('admin-checkin');
+            const checkoutInput = document.getElementById('admin-checkout');
+            
+            // Only set default dates if we don't have saved dates
+            if (checkinInput && !guestData.rawCheckIn) {
+                checkinInput.value = '2025-07-18';
+            } else if (checkinInput && guestData.rawCheckIn) {
+                checkinInput.value = guestData.rawCheckIn;
+            }
+            
+            if (checkoutInput && !guestData.rawCheckOut) {
+                checkoutInput.value = '2025-07-21';
+            } else if (checkoutInput && guestData.rawCheckOut) {
+                checkoutInput.value = guestData.rawCheckOut;
+            }
             
             // Load cleaning data
             loadCleaningData();
@@ -831,7 +847,7 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
         function updateGuestInfo() {
             // Get values from admin form
             const newGuestName = document.getElementById('admin-guest-name').value;
-            const newGuestCount = document.getElementById('admin-guest-count').value;
+            const newGuestCount = parseInt(document.getElementById('admin-guest-count').value);
             const newConfirmation = document.getElementById('admin-confirmation').value;
             const newDoorCode = document.getElementById('admin-door-code').value;
             const checkinDate = document.getElementById('admin-checkin').value;
@@ -839,11 +855,15 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             
             // Update guestData object
             guestData.guestName = newGuestName;
-            guestData.guestCount = newGuestCount;
+            guestData.guestCount = newGuestCount; // Make sure it's a number
             guestData.confirmation = newConfirmation;
             guestData.doorCode = newDoorCode;
             
-            // Format and update dates
+            // Store raw dates for admin form
+            guestData.rawCheckIn = checkinDate;
+            guestData.rawCheckOut = checkoutDate;
+            
+            // Format and update display dates
             if (checkinDate) {
                 guestData.checkIn = new Date(checkinDate).toLocaleDateString('en-US', { 
                     year: 'numeric', 
@@ -862,6 +882,7 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             // Save to localStorage for persistence
             try {
                 localStorage.setItem('capeCoralGuestData', JSON.stringify(guestData));
+                console.log('Saved guest data:', guestData); // Debug log
             } catch (error) {
                 console.log('Could not save guest data');
             }
@@ -869,7 +890,7 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             // Update all displays
             updateDisplays();
             
-            showAlert(`Guest information updated successfully for ${newGuestName}!`, 'success');
+            showAlert(`Guest information updated for ${newGuestName} (${newGuestCount} guests)!`, 'success');
         }
 
         function updateWifiSettings() {
@@ -1452,23 +1473,28 @@ Thank you for helping keep our property clean!`;
                 guestCount = 2; // Default fallback
             }
             
+            // Generate new door code first
+            const newDoorCode = Math.floor(1000 + Math.random() * 9000).toString();
+            
             // Update form fields
             document.getElementById('admin-guest-name').value = guestName;
             document.getElementById('admin-guest-count').value = guestCount;
             document.getElementById('admin-checkin').value = formatDateForInput(checkIn);
             document.getElementById('admin-checkout').value = formatDateForInput(checkOut);
             document.getElementById('admin-confirmation').value = confirmation;
+            document.getElementById('admin-door-code').value = newDoorCode;
             
-            // Generate new door code
-            generateNewDoorCode();
-            
-            // Update guest data immediately
+            // DIRECTLY update guestData object
             guestData.guestName = guestName;
-            guestData.guestCount = guestCount;
+            guestData.guestCount = parseInt(guestCount); // Ensure it's a number
             guestData.confirmation = confirmation;
-            guestData.doorCode = document.getElementById('admin-door-code').value;
+            guestData.doorCode = newDoorCode;
             
-            // Format dates properly
+            // Store raw dates for admin form
+            guestData.rawCheckIn = formatDateForInput(checkIn);
+            guestData.rawCheckOut = formatDateForInput(checkOut);
+            
+            // Format dates for display
             if (checkIn) {
                 guestData.checkIn = new Date(checkIn).toLocaleDateString('en-US', { 
                     year: 'numeric', 
@@ -1484,9 +1510,10 @@ Thank you for helping keep our property clean!`;
                 });
             }
             
-            // Save to localStorage
+            // Save to localStorage IMMEDIATELY
             try {
                 localStorage.setItem('capeCoralGuestData', JSON.stringify(guestData));
+                console.log('Imported guest data:', guestData); // Debug log
             } catch (error) {
                 console.log('Could not save guest data');
             }
@@ -1494,7 +1521,7 @@ Thank you for helping keep our property clean!`;
             // Update displays
             updateDisplays();
             
-            showAlert(`Successfully imported booking for ${guestName} (${guestCount} guests)!`, 'success');
+            showAlert(`Successfully imported: ${guestName} (${guestCount} guests) - Door code: ${newDoorCode}`, 'success');
             
             // Hide the import section
             document.getElementById('csv-preview').style.display = 'none';
