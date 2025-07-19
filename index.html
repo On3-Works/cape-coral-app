@@ -245,6 +245,13 @@
             gap: 10px;
             padding: 15px 0;
         }
+        #guest-nav.nav-grid {
+            flex-direction: row;
+        }
+        #admin-nav.nav-grid {
+            flex-direction: column;
+            align-items: center;
+        }
         .photo-placeholder {
             background: linear-gradient(135deg, #E0F2F1, #B2DFDB);
             padding: 40px 20px;
@@ -329,6 +336,18 @@
             height: auto;
             border-radius: 8px;
         }
+        .star {
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            margin: 0 5px;
+        }
+        .star:hover, .star.active {
+            color: #FF9800;
+        }
+        .star.filled {
+            color: #FF9800;
+        }
         .photo-close {
             position: absolute;
             top: 15px;
@@ -344,7 +363,6 @@
             align-items: center;
             margin-top: 10px;
         }
-        @media (max-width: 768px) {
             body {
                 padding: 10px;
             }
@@ -373,6 +391,7 @@
             <button class="btn" onclick="showPage('music', this)">🎵 Music</button>
             <button class="btn" onclick="showPage('rules', this)">📋 Rules</button>
             <button class="btn" onclick="showPage('emergency', this)">📞 Emergency</button>
+            <button class="btn" id="review-btn" onclick="showPage('review', this)" style="display: none;">⭐ Review</button>
             <button class="btn" id="admin-btn" onclick="showPage('admin-login', this)" style="display: none;">⚙️ Admin</button>
         </div>
         <div id="admin-nav" class="nav-grid" style="display: none;">
@@ -695,6 +714,120 @@
             </div>
         </div>
 
+        <!-- Review Page -->
+        <div id="review-page" style="display: none;">
+            <div class="welcome-banner" style="background: linear-gradient(135deg, #FF9800, #F57C00); margin-bottom: 20px;">
+                <h2 style="color: white; margin-bottom: 10px;">⭐ Share Your Cape Coral Experience!</h2>
+                <p style="color: white; opacity: 0.9;">We hope you had an amazing stay at our tropical retreat. Your feedback helps us improve!</p>
+            </div>
+
+            <div class="card">
+                <h3>🌟 Rate Your Stay</h3>
+                <div style="text-align: center; margin: 25px 0;">
+                    <div id="star-rating" style="font-size: 40px; margin: 15px 0;">
+                        <span class="star" data-rating="1" onclick="setRating(1)">☆</span>
+                        <span class="star" data-rating="2" onclick="setRating(2)">☆</span>
+                        <span class="star" data-rating="3" onclick="setRating(3)">☆</span>
+                        <span class="star" data-rating="4" onclick="setRating(4)">☆</span>
+                        <span class="star" data-rating="5" onclick="setRating(5)">☆</span>
+                    </div>
+                    <p id="rating-text" style="color: #546E7A; margin: 10px 0;">Click the stars to rate your experience</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💭 Tell Us About Your Stay</h3>
+                <div class="form-group">
+                    <label>What did you love most about your stay?</label>
+                    <textarea id="review-highlights" rows="3" placeholder="The pool was amazing, the location was perfect, etc..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Any suggestions for improvement?</label>
+                    <textarea id="review-suggestions" rows="3" placeholder="Optional - help us make future stays even better"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Would you recommend this property to friends?</label>
+                    <div style="display: flex; gap: 15px; margin: 10px 0;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" name="recommend" value="yes" style="width: auto;">
+                            <span>👍 Absolutely!</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" name="recommend" value="maybe" style="width: auto;">
+                            <span>🤔 Maybe</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" name="recommend" value="no" style="width: auto;">
+                            <span>👎 Probably not</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🏖️ Cape Coral Experience</h3>
+                <div class="form-group">
+                    <label>How was the local area and attractions?</label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" name="enjoyed" value="beaches" style="width: auto;">
+                            <span>🏖️ Beautiful beaches</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" name="enjoyed" value="restaurants" style="width: auto;">
+                            <span>🍽️ Great restaurants</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" name="enjoyed" value="activities" style="width: auto;">
+                            <span>🎣 Fun activities</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" name="enjoyed" value="shopping" style="width: auto;">
+                            <span>🛍️ Shopping options</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" name="enjoyed" value="nature" style="width: auto;">
+                            <span>🌴 Natural beauty</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" name="enjoyed" value="peaceful" style="width: auto;">
+                            <span>😌 Peaceful atmosphere</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border-left-color: #4CAF50;">
+                <h3>📝 Guest Information (Optional)</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" id="reviewer-name" placeholder="First name or initials for public reviews">
+                    </div>
+                    <div class="form-group">
+                        <label>City/State</label>
+                        <input type="text" id="reviewer-location" placeholder="e.g., Miami, FL">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="public-review" style="width: auto;">
+                        <span>I'm okay with sharing this review publicly (helps future guests!)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn btn-success" onclick="submitReview()" style="padding: 15px 30px; font-size: 16px;">
+                    🌟 Submit Review
+                </button>
+                <p class="small-text" style="margin-top: 15px;">Thank you for taking the time to share your experience!</p>
+            </div>
+        </div>
+
         <!-- Emergency Page -->
         <div id="emergency-page" style="display: none;">
             <h2>📞 Emergency Contacts</h2>
@@ -906,7 +1039,7 @@
 
         function showPage(pageId, buttonElement) {
             // Hide all pages
-            const pages = ['home', 'access', 'attractions', 'photos', 'music', 'rules', 'emergency', 'admin-login', 'admin-dashboard', 'admin-settings'];
+            const pages = ['home', 'access', 'attractions', 'photos', 'music', 'rules', 'emergency', 'review', 'admin-login', 'admin-dashboard', 'admin-settings'];
             pages.forEach(page => {
                 const element = document.getElementById(page + '-page');
                 if (element) element.style.display = 'none';
@@ -1474,13 +1607,124 @@
             showAlert(`New door code generated: ${code}`, 'info');
         }
 
-        // CSV Import Functions (simplified for core functionality)
-        function processAirbnbCSV() {
-            showAlert('CSV import feature available in full version', 'info');
+        // Review System Functions
+        let currentRating = 0;
+
+        function setRating(rating) {
+            currentRating = rating;
+            const stars = document.querySelectorAll('.star');
+            const ratingTexts = {
+                1: '⭐ Poor - We\'d love to improve',
+                2: '⭐⭐ Fair - Some room for improvement', 
+                3: '⭐⭐⭐ Good - A pleasant stay',
+                4: '⭐⭐⭐⭐ Great - Really enjoyed it!',
+                5: '⭐⭐⭐⭐⭐ Excellent - Absolutely amazing!'
+            };
+            
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.textContent = '★';
+                    star.classList.add('filled');
+                } else {
+                    star.textContent = '☆';
+                    star.classList.remove('filled');
+                }
+            });
+            
+            document.getElementById('rating-text').textContent = ratingTexts[rating];
         }
 
-        function parseAirbnbData() {
-            showAlert('CSV processing feature available in full version', 'info');
+        function submitReview() {
+            // Validate required fields
+            if (currentRating === 0) {
+                showAlert('Please select a star rating', 'error');
+                return;
+            }
+            
+            const highlights = document.getElementById('review-highlights').value.trim();
+            if (!highlights) {
+                showAlert('Please tell us what you loved about your stay', 'error');
+                return;
+            }
+            
+            // Collect review data
+            const reviewData = {
+                id: Date.now(),
+                guestName: guestData.guestName,
+                confirmationCode: guestData.confirmation,
+                checkOutDate: guestData.checkOut,
+                rating: currentRating,
+                highlights: highlights,
+                suggestions: document.getElementById('review-suggestions').value.trim(),
+                recommend: document.querySelector('input[name="recommend"]:checked')?.value || '',
+                enjoyed: Array.from(document.querySelectorAll('input[name="enjoyed"]:checked')).map(cb => cb.value),
+                reviewerName: document.getElementById('reviewer-name').value.trim(),
+                reviewerLocation: document.getElementById('reviewer-location').value.trim(),
+                isPublic: document.getElementById('public-review').checked,
+                submittedDate: new Date().toISOString(),
+                submittedTime: new Date().toLocaleString()
+            };
+            
+            // Save review
+            try {
+                let existingReviews = [];
+                const saved = localStorage.getItem('propertyReviews');
+                if (saved) {
+                    existingReviews = JSON.parse(saved);
+                }
+                
+                existingReviews.push(reviewData);
+                localStorage.setItem('propertyReviews', JSON.stringify(existingReviews));
+                
+                // Show success message
+                showAlert('Thank you for your review! We truly appreciate your feedback.', 'success');
+                
+                // Clear form
+                clearReviewForm();
+                
+                // Hide review button after submission
+                document.getElementById('review-btn').style.display = 'none';
+                
+                // Go back to home page
+                setTimeout(() => {
+                    showPage('home');
+                    const firstBtn = document.querySelector('.nav-grid .btn');
+                    if (firstBtn) firstBtn.classList.add('active');
+                }, 2000);
+                
+            } catch (error) {
+                showAlert('Unable to save review. Please try again.', 'error');
+            }
+        }
+
+        function clearReviewForm() {
+            currentRating = 0;
+            setRating(0);
+            document.getElementById('review-highlights').value = '';
+            document.getElementById('review-suggestions').value = '';
+            document.querySelectorAll('input[name="recommend"]').forEach(radio => radio.checked = false);
+            document.querySelectorAll('input[name="enjoyed"]').forEach(cb => cb.checked = false);
+            document.getElementById('reviewer-name').value = '';
+            document.getElementById('reviewer-location').value = '';
+            document.getElementById('public-review').checked = false;
+            document.getElementById('rating-text').textContent = 'Click the stars to rate your experience';
+        }
+
+        function checkReviewAvailability() {
+            if (!guestData.rawCheckOut) return;
+            
+            const today = new Date();
+            const checkOutDate = new Date(guestData.rawCheckOut);
+            
+            // Show review button only on checkout day
+            const isCheckOutDay = today.toDateString() === checkOutDate.toDateString();
+            
+            const reviewBtn = document.getElementById('review-btn');
+            if (isCheckOutDay) {
+                reviewBtn.style.display = 'inline-block';
+            } else {
+                reviewBtn.style.display = 'none';
+            }
         }
         document.addEventListener('DOMContentLoaded', function() {
             // Load saved guest data
@@ -1498,6 +1742,9 @@
             
             // Load property photo on page load
             loadPropertyPhoto();
+            
+            // Check if review should be available
+            checkReviewAvailability();
             
             // Admin toggle with Ctrl+Shift+A
             document.addEventListener('keydown', function(e) {
