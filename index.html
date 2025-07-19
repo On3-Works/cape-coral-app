@@ -633,6 +633,7 @@
                 </div>
                 <button class="btn btn-success" onclick="updateGuestInfo()">Update Guest Information</button>
                 <button class="btn" onclick="generateNewDoorCode()">🔑 Generate New Door Code</button>
+                <button class="btn" onclick="syncToGitHub()" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">🔄 Sync to PMS</button>
             </div>
         </div>
 
@@ -1640,7 +1641,7 @@ Thank you for helping keep our property clean!`;
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Load saved guest data
+            // Load saved guest data first (local backup)
             try {
                 const savedGuestData = localStorage.getItem('capeCoralGuestData');
                 if (savedGuestData) {
@@ -1652,6 +1653,9 @@ Thank you for helping keep our property clean!`;
             
             // Update displays with loaded data
             updateDisplays();
+            
+            // Try to load current booking from GitHub data (async)
+            loadCurrentBookingFromGitHub();
             
             // Improved admin toggle with Ctrl+Shift+A
             document.addEventListener('keydown', function(e) {
@@ -1676,6 +1680,79 @@ Thank you for helping keep our property clean!`;
             const firstBtn = document.querySelector('.btn');
             if (firstBtn) firstBtn.classList.add('active');
         });
+
+        // Load current booking from GitHub data file
+        async function loadCurrentBookingFromGitHub() {
+            try {
+                // Try to load from the GitHub Pages data file
+                const response = await fetch('./data/current-booking.json');
+                if (response.ok) {
+                    const bookingData = await response.json();
+                    
+                    // Update guestData with GitHub data
+                    if (bookingData.guestName) guestData.guestName = bookingData.guestName;
+                    if (bookingData.checkIn) guestData.checkIn = formatDateFromGitHub(bookingData.checkIn);
+                    if (bookingData.checkOut) guestData.checkOut = formatDateFromGitHub(bookingData.checkOut);
+                    if (bookingData.guests) guestData.guestCount = bookingData.guests;
+                    if (bookingData.confirmation) guestData.confirmation = bookingData.confirmation;
+                    if (bookingData.doorCode) guestData.doorCode = bookingData.doorCode;
+                    if (bookingData.wifiName) guestData.wifiName = bookingData.wifiName;
+                    if (bookingData.wifiPassword) guestData.wifiPassword = bookingData.wifiPassword;
+                    
+                    // Store raw dates for admin
+                    if (bookingData.checkIn) guestData.rawCheckIn = bookingData.checkIn;
+                    if (bookingData.checkOut) guestData.rawCheckOut = bookingData.checkOut;
+                    
+                    // Save the updated data
+                    localStorage.setItem('capeCoralGuestData', JSON.stringify(guestData));
+                    
+                    // Update displays with new data
+                    updateDisplays();
+                    
+                    console.log('Loaded booking data from GitHub:', bookingData);
+                    showAlert('✅ Booking data updated from PMS', 'success');
+                } else {
+                    console.log('No GitHub booking data found, using local data');
+                }
+            } catch (error) {
+                console.log('Could not load GitHub booking data:', error);
+                // Fallback to local data - no error message for users
+            }
+        }
+
+        // Format date from GitHub data (YYYY-MM-DD) to display format
+        function formatDateFromGitHub(dateStr) {
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            } catch (error) {
+                return dateStr; // Return as-is if parsing fails
+            }
+        }
+
+        // Update GitHub data when admin makes changes
+        async function syncToGitHub() {
+            const bookingData = {
+                guestName: guestData.guestName,
+                checkIn: guestData.rawCheckIn || '2025-07-18',
+                checkOut: guestData.rawCheckOut || '2025-07-21',
+                guests: parseInt(guestData.guestCount),
+                doorCode: guestData.doorCode,
+                confirmation: guestData.confirmation,
+                wifiName: guestData.wifiName,
+                wifiPassword: guestData.wifiPassword,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            // In a real implementation, this would call the GitHub API
+            // For now, just show what would be sent
+            console.log('Would sync to GitHub:', bookingData);
+            showAlert('Data prepared for PMS sync', 'info');
+        }
 
         // Add CSS animation
         const style = document.createElement('style');
