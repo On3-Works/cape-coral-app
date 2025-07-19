@@ -1748,19 +1748,22 @@
             
             // Admin toggle with Ctrl+Shift+A
             document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                // Check for Ctrl+Shift+A (case insensitive)
+                if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                    e.preventDefault();
+                    
                     const adminBtn = document.getElementById('admin-btn');
                     if (adminBtn.style.display === 'none' || adminBtn.style.display === '') {
                         adminBtn.style.display = 'inline-block';
-                        showAlert('Admin access enabled', 'success');
+                        showAlert('Admin access enabled - Click ⚙️ Admin button to login', 'success');
                     } else {
                         adminBtn.style.display = 'none';
+                        // If currently in admin mode, logout
                         if (document.getElementById('admin-nav').style.display === 'flex') {
                             logout();
                         }
                         showAlert('Admin access hidden', 'info');
                     }
-                    e.preventDefault();
                 }
             });
             
