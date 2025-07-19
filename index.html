@@ -212,6 +212,7 @@
             <button class="btn active" onclick="showPage('home', this)">🏠 Welcome</button>
             <button class="btn" onclick="showPage('access', this)">🔑 Access Info</button>
             <button class="btn" onclick="showPage('attractions', this)">📍 Attractions</button>
+            <button class="btn" onclick="showPage('photos', this)">📸 Photos</button>
             <button class="btn" onclick="showPage('music', this)">🎵 Music</button>
             <button class="btn" onclick="showPage('rules', this)">📋 Rules</button>
             <button class="btn" onclick="showPage('emergency', this)">📞 Emergency</button>
@@ -306,6 +307,24 @@
                 <div class="attraction-card">
                     <h3>Seed to Table</h3>
                     <p>Restaurant • 15.2 miles to Naples (25 min drive) • ⭐ 5.0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photos Page -->
+        <div id="photos-page" style="display: none;">
+            <h2>📸 Property Photos</h2>
+            
+            <div class="welcome-banner" style="background: linear-gradient(135deg, #667eea, #764ba2); margin-bottom: 20px;">
+                <h3 style="color: white; margin-bottom: 10px;">Cape Coral Home Retreat Gallery</h3>
+                <p style="color: white; opacity: 0.9;">Take a virtual tour of your beautiful tropical retreat!</p>
+            </div>
+            
+            <div id="photo-gallery" class="stats-grid">
+                <!-- Photos will be loaded here -->
+                <div class="card" style="text-align: center; padding: 40px;">
+                    <h3 style="color: #6B7280;">📷 No Photos Yet</h3>
+                    <p style="color: #9CA3AF;">Photos will appear here once uploaded in the admin panel.</p>
                 </div>
             </div>
         </div>
@@ -1350,7 +1369,31 @@ Thank you for helping keep our property clean!`;
                 const checkOut = booking['End date'] || booking['Check-out'] || booking['Checkout'] || booking['Check out'] || '';
                 const confirmation = booking['Confirmation code'] || booking['Confirmation Code'] || booking['Confirmation'] || `BK${Date.now()}${index}`;
                 const nights = booking['Nights'] || booking['# of nights'] || 'N/A';
-                const guests = booking['Guests'] || booking['Guest count'] || booking['# of guests'] || '2';
+                
+                // Better guest count calculation for display
+                let guestCount = 0;
+                const adults = parseInt(booking['# of adults'] || booking['Adults'] || 0);
+                const children = parseInt(booking['# of children'] || booking['Children'] || 0);
+                const infants = parseInt(booking['# of infants'] || booking['Infants'] || 0);
+                const totalGuests = parseInt(booking['Guests'] || booking['Guest count'] || booking['# of guests'] || 0);
+                
+                if (totalGuests > 0) {
+                    guestCount = totalGuests;
+                } else if (adults > 0 || children > 0 || infants > 0) {
+                    guestCount = adults + children + infants;
+                } else {
+                    guestCount = 2; // Default
+                }
+                
+                // Show breakdown if available
+                let guestDisplay = `${guestCount} total`;
+                if (adults > 0 || children > 0 || infants > 0) {
+                    const breakdown = [];
+                    if (adults > 0) breakdown.push(`${adults} adults`);
+                    if (children > 0) breakdown.push(`${children} children`);
+                    if (infants > 0) breakdown.push(`${infants} infants`);
+                    guestDisplay = `${guestCount} total (${breakdown.join(', ')})`;
+                }
                 
                 html += `
                     <div style="background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; cursor: pointer; transition: all 0.2s ease;" 
@@ -1371,7 +1414,7 @@ Thank you for helping keep our property clean!`;
                             <button class="btn" style="font-size: 12px; padding: 6px 12px;">Import</button>
                         </div>
                         <div style="margin-top: 10px; font-size: 14px; color: #6b7280;">
-                            ${guests} guests • ${nights} nights
+                            ${guestDisplay} • ${nights} nights
                         </div>
                     </div>
                 `;
@@ -1392,11 +1435,26 @@ Thank you for helping keep our property clean!`;
             const checkIn = booking['Start date'] || booking['Check-in'] || booking['Checkin'] || booking['Check in'] || '';
             const checkOut = booking['End date'] || booking['Check-out'] || booking['Checkout'] || booking['Check out'] || '';
             const confirmation = booking['Confirmation code'] || booking['Confirmation Code'] || booking['Confirmation'] || `BK${Date.now()}`;
-            const guests = booking['Guests'] || booking['Guest count'] || booking['# of guests'] || booking['Adults'] || '2';
+            
+            // Better guest count calculation - try multiple field names
+            let guestCount = 0;
+            const adults = parseInt(booking['# of adults'] || booking['Adults'] || booking['Number of adults'] || 0);
+            const children = parseInt(booking['# of children'] || booking['Children'] || booking['Number of children'] || 0);
+            const infants = parseInt(booking['# of infants'] || booking['Infants'] || booking['Number of infants'] || 0);
+            const totalGuests = parseInt(booking['Guests'] || booking['Guest count'] || booking['# of guests'] || booking['Total guests'] || 0);
+            
+            // Use total if available, otherwise calculate from breakdown
+            if (totalGuests > 0) {
+                guestCount = totalGuests;
+            } else if (adults > 0 || children > 0 || infants > 0) {
+                guestCount = adults + children + infants;
+            } else {
+                guestCount = 2; // Default fallback
+            }
             
             // Update form fields
             document.getElementById('admin-guest-name').value = guestName;
-            document.getElementById('admin-guest-count').value = parseInt(guests) || 2;
+            document.getElementById('admin-guest-count').value = guestCount;
             document.getElementById('admin-checkin').value = formatDateForInput(checkIn);
             document.getElementById('admin-checkout').value = formatDateForInput(checkOut);
             document.getElementById('admin-confirmation').value = confirmation;
@@ -1404,10 +1462,39 @@ Thank you for helping keep our property clean!`;
             // Generate new door code
             generateNewDoorCode();
             
-            // Update guest data
-            updateGuestInfo();
+            // Update guest data immediately
+            guestData.guestName = guestName;
+            guestData.guestCount = guestCount;
+            guestData.confirmation = confirmation;
+            guestData.doorCode = document.getElementById('admin-door-code').value;
             
-            showAlert(`Successfully imported booking for ${guestName}!`, 'success');
+            // Format dates properly
+            if (checkIn) {
+                guestData.checkIn = new Date(checkIn).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+            if (checkOut) {
+                guestData.checkOut = new Date(checkOut).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+            
+            // Save to localStorage
+            try {
+                localStorage.setItem('capeCoralGuestData', JSON.stringify(guestData));
+            } catch (error) {
+                console.log('Could not save guest data');
+            }
+            
+            // Update displays
+            updateDisplays();
+            
+            showAlert(`Successfully imported booking for ${guestName} (${guestCount} guests)!`, 'success');
             
             // Hide the import section
             document.getElementById('csv-preview').style.display = 'none';
