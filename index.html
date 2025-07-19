@@ -690,81 +690,6 @@
             </div>
 
             <div class="admin-card card">
-                <h3>🧹 Cleaning Company Management</h3>
-                
-                <div class="form-group">
-                    <label>Cleaning Company Contact</label>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <input type="text" id="cleaning-company" placeholder="Company Name" value="Cape Coral Cleaning Services">
-                        </div>
-                        <div class="form-group">
-                            <input type="tel" id="cleaning-phone" placeholder="Phone Number" value="(239) 555-0199">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Schedule Cleaning After Check-out</label>
-                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                        <input type="date" id="cleaning-date" style="flex: 1; min-width: 150px;">
-                        <input type="time" id="cleaning-time" value="11:30" style="flex: 1; min-width: 120px;">
-                        <button class="btn" onclick="scheduleCleaningFromCheckout()">Auto-Schedule</button>
-                    </div>
-                    <p class="small-text">Auto-schedule will set cleaning 30 minutes after check-out time</p>
-                </div>
-
-                <div class="form-group">
-                    <label>Cleaning Checklist</label>
-                    <textarea id="cleaning-checklist" rows="8" style="width: 100%;">LIVING AREAS: ✓ Vacuum all carpets and rugs ✓ Mop all hard floors ✓ Dust all surfaces
-KITCHEN: ✓ Clean countertops ✓ Clean appliances ✓ Restock supplies
-BATHROOMS: ✓ Clean and disinfect ✓ Replace towels ✓ Restock supplies
-BEDROOMS: ✓ Fresh linens ✓ Vacuum floors ✓ Dust surfaces
-FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
-                </div>
-
-                <div class="form-row">
-                    <button class="btn btn-success" onclick="saveCleaningInfo()">Save Cleaning Details</button>
-                    <button class="btn" onclick="sendCleaningReminder()">📱 Send SMS Reminder</button>
-                </div>
-            </div>
-
-            <div class="admin-card card">
-                <h3>🗑️ Trash Pickup Management</h3>
-                
-                <div class="alert-info" style="margin-bottom: 20px;">
-                    <strong>Pickup Schedule:</strong> Monday morning pickup - trash goes out Sunday night
-                </div>
-                
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                    <h4>📍 Trash Bin Location</h4>
-                    <p><strong>Location:</strong> Right side of house next to AC units</p>
-                    <p><strong>Instructions for Guests:</strong></p>
-                    <ul>
-                        <li>Take bins to the curb Sunday evening</li>
-                        <li>Return empty bins to AC unit area after pickup</li>
-                        <li>Both regular trash and recycling bins available</li>
-                    </ul>
-                </div>
-
-                <div class="form-group">
-                    <label>Current Week Reminder Status</label>
-                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                        <button class="btn" onclick="sendTrashReminder()">📱 Send Trash Reminder to Guest</button>
-                        <button class="btn" onclick="markTrashCompleted()">✅ Mark as Completed</button>
-                        <span id="trash-status" style="padding: 8px 15px; border-radius: 5px; background: #fef3c7; color: #92400e;">Pending</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Custom Trash Instructions</label>
-                    <textarea id="trash-instructions" rows="4" style="width: 100%;">Please take trash bins to the curb Sunday evening for Monday morning pickup. Bins are located on the right side of the house next to the AC units. Return empty bins to the same location after pickup. Thank you!</textarea>
-                </div>
-
-                <button class="btn btn-success" onclick="saveTrashInfo()">Save Trash Instructions</button>
-            </div>
-
-            <div class="admin-card card">
                 <h3>Property Information</h3>
                 <div class="form-group">
                     <label>Property Name</label>
@@ -798,8 +723,8 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             guestCount: 4,
             confirmation: 'ABC123',
             doorCode: '1234',
-            wifiName: 'CapeRetreatGuest',
-            wifiPassword: 'HavingFun2025'
+            wifiName: 'CapeCoral_Retreat_Guest',
+            wifiPassword: 'Tropical2025!'
         };
 
         function showPage(pageId, buttonElement) {
@@ -871,9 +796,6 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
                 checkoutInput.value = guestData.rawCheckOut;
             }
             
-            // Load cleaning data
-            loadCleaningData();
-            
             // Load property photo
             loadPropertyPhoto();
         }
@@ -889,7 +811,7 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             
             // Update guestData object
             guestData.guestName = newGuestName;
-            guestData.guestCount = newGuestCount; // Make sure it's a number
+            guestData.guestCount = newGuestCount;
             guestData.confirmation = newConfirmation;
             guestData.doorCode = newDoorCode;
             
@@ -916,7 +838,6 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             // Save to localStorage for persistence
             try {
                 localStorage.setItem('capeCoralGuestData', JSON.stringify(guestData));
-                console.log('Saved guest data:', guestData); // Debug log
             } catch (error) {
                 console.log('Could not save guest data');
             }
@@ -988,8 +909,6 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             
             // Update Music page
             if (musicWifiName) musicWifiName.textContent = guestData.wifiName;
-            
-            console.log('Display updated with:', guestData); // Debug log
         }
 
         function showAlert(message, type) {
@@ -1015,21 +934,17 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
 
         // Music/Audio System Functions
         function connectSpotify() {
-            // Check if we're on mobile/tablet
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (isMobile) {
-                // Try to open Spotify app directly
                 const spotifyAppURL = 'spotify://';
                 const spotifyWebURL = 'https://open.spotify.com';
                 
-                // Create a hidden iframe to attempt app launch
                 const iframe = document.createElement('iframe');
                 iframe.style.display = 'none';
                 iframe.src = spotifyAppURL;
                 document.body.appendChild(iframe);
                 
-                // Fallback to web version after a short delay
                 setTimeout(() => {
                     document.body.removeChild(iframe);
                     window.open(spotifyWebURL, '_blank');
@@ -1037,7 +952,6 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
                 
                 showAlert('Opening Spotify... Look for "Cape Coral Retreat Audio" in your devices list!', 'success');
             } else {
-                // Desktop - open Spotify Web Player
                 window.open('https://open.spotify.com', '_blank');
                 showAlert('Spotify opened! Look for "Cape Coral Retreat Audio" in the devices list.', 'info');
             }
@@ -1060,7 +974,6 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             
             showAlert(`Audio zone set to: ${zones[zone]}`, 'success');
             
-            // Hide the notification after showing the selected zone
             setTimeout(() => {
                 const zoneEl = document.getElementById('zone-selected');
                 if (zoneEl) zoneEl.style.display = 'none';
@@ -1082,14 +995,11 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
                 'dinner': 'Dinner Jazz'
             };
             
-            // Try to open Spotify app first on mobile
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (isMobile) {
-                // Convert web URL to app URL
                 const appURL = playlists[type].replace('https://open.spotify.com', 'spotify:');
                 
-                // Try app first, fallback to web
                 const iframe = document.createElement('iframe');
                 iframe.style.display = 'none';
                 iframe.src = appURL;
@@ -1116,7 +1026,6 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
                 reader.onload = function(e) {
                     const imageData = e.target.result;
                     
-                    // Save to localStorage
                     try {
                         localStorage.setItem('propertyPhoto', imageData);
                         showAlert('Property photo uploaded successfully!', 'success');
@@ -1125,10 +1034,7 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
                         return;
                     }
                     
-                    // Show preview in admin
                     displayPhotoPreview(imageData);
-                    
-                    // Update guest page
                     updatePropertyPhotoDisplay(imageData);
                 };
                 
@@ -1160,11 +1066,9 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
         function removePropertyPhoto() {
             localStorage.removeItem('propertyPhoto');
             
-            // Reset admin preview
             document.getElementById('photo-preview').innerHTML = '';
             document.getElementById('property-photo').value = '';
             
-            // Reset guest display
             const photoDisplay = document.getElementById('property-photo-display');
             if (photoDisplay) {
                 photoDisplay.innerHTML = `
@@ -1190,11 +1094,72 @@ FINAL: ✓ Set thermostat to 72°F ✓ Test WiFi ✓ Check door code</textarea>
             }
         }
 
-        // Cleaning Management Functions
-        function scheduleCleaningFromCheckout() {
-            const checkOutDate = document.getElementById('admin-checkout').value;
-            if (checkOutDate) {
-                document.getElementById('cleaning-date').value = checkOutDate;
-                document.getElementById('cleaning-time').value = '11:30';
-                showAlert('Cleaning automatically scheduled for 30 minutes after checkout!', 'success');
+        function generateNewDoorCode() {
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+            document.getElementById('admin-door-code').value = code;
+            showAlert(`New door code generated: ${code}`, 'info');
+        }
+
+        // CSV Import Functions (simplified for core functionality)
+        function processAirbnbCSV() {
+            showAlert('CSV import feature available in full version', 'info');
+        }
+
+        function parseAirbnbData() {
+            showAlert('CSV processing feature available in full version', 'info');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved guest data
+            try {
+                const savedGuestData = localStorage.getItem('capeCoralGuestData');
+                if (savedGuestData) {
+                    guestData = { ...guestData, ...JSON.parse(savedGuestData) };
+                }
+            } catch (error) {
+                console.log('No saved guest data found, using defaults');
             }
+            
+            // Update displays with loaded data
+            updateDisplays();
+            
+            // Load property photo on page load
+            loadPropertyPhoto();
+            
+            // Admin toggle with Ctrl+Shift+A
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                    const adminBtn = document.getElementById('admin-btn');
+                    if (adminBtn.style.display === 'none' || adminBtn.style.display === '') {
+                        adminBtn.style.display = 'inline-block';
+                        showAlert('Admin access enabled', 'success');
+                    } else {
+                        adminBtn.style.display = 'none';
+                        if (document.getElementById('admin-nav').style.display === 'flex') {
+                            logout();
+                        }
+                        showAlert('Admin access hidden', 'info');
+                    }
+                    e.preventDefault();
+                }
+            });
+            
+            // Show home page by default
+            showPage('home');
+            const firstBtn = document.querySelector('.btn');
+            if (firstBtn) firstBtn.classList.add('active');
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
