@@ -900,12 +900,51 @@
                 const savedBooking = localStorage.getItem('currentBooking');
                 if (savedBooking) {
                     currentBooking = JSON.parse(savedBooking);
+                } else {
+                    // Set default demo booking for GitHub/new visitors
+                    currentBooking = {
+                        id: 'demo-booking',
+                        guestName: 'John & Sarah Smith',
+                        guestCount: 4,
+                        checkin: '2025-07-18',
+                        checkout: '2025-07-21',
+                        confirmation: 'ABC123',
+                        notes: 'Anniversary celebration',
+                        createdAt: new Date().toISOString(),
+                        status: 'active'
+                    };
                 }
 
                 // Load all reservations
                 const savedReservations = localStorage.getItem('allReservations');
                 if (savedReservations) {
                     allReservations = JSON.parse(savedReservations);
+                } else {
+                    // Set default demo reservations for GitHub/new visitors
+                    allReservations = [
+                        {
+                            id: 'demo-1',
+                            guestName: 'John & Sarah Smith',
+                            guestCount: 4,
+                            checkin: '2025-07-18',
+                            checkout: '2025-07-21',
+                            confirmation: 'ABC123',
+                            notes: 'Anniversary celebration',
+                            createdAt: new Date().toISOString(),
+                            status: 'active'
+                        },
+                        {
+                            id: 'demo-2',
+                            guestName: 'Mike Johnson',
+                            guestCount: 2,
+                            checkin: '2025-08-01',
+                            checkout: '2025-08-05',
+                            confirmation: 'DEF456',
+                            notes: 'Business trip',
+                            createdAt: new Date().toISOString(),
+                            status: 'active'
+                        }
+                    ];
                 }
 
                 // Load property settings
