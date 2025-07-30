@@ -15,17 +15,8 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             line-height: 1.6;
             color: #2c3e50;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23667eea;stop-opacity:1" /><stop offset="100%" style="stop-color:%23764ba2;stop-opacity:1" /></linearGradient></defs><rect width="1000" height="1000" fill="url(%23grad)"/></svg>');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-        }
-
-        .custom-background {
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
         }
 
         .container {
@@ -71,7 +62,7 @@
             padding: 0.5rem 1rem;
             border-radius: 25px;
             transition: all 0.3s ease;
-            position: relative;
+            cursor: pointer;
         }
 
         .nav-link:hover, .nav-link.active {
@@ -210,115 +201,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Attractions */
-        .attraction-item {
-            display: flex;
-            align-items: center;
-            padding: 1.5rem;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .attraction-item:hover {
-            transform: translateX(10px);
-            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
-        }
-
-        .attraction-icon {
-            font-size: 2rem;
-            margin-right: 1rem;
-            width: 60px;
-            text-align: center;
-        }
-
-        .attraction-info h3 {
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-        }
-
-        .attraction-details {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-
-        /* Emergency Contacts */
-        .emergency-card {
-            background: linear-gradient(135deg, #ff7675, #fd79a8);
-            color: white;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .emergency-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            transform: rotate(45deg);
-        }
-
-        .emergency-phone {
-            font-size: 2rem;
-            font-weight: 700;
-            color: white;
-            text-decoration: none;
-            display: block;
-            margin: 1rem 0;
-        }
-
-        /* Review Form */
-        .star-rating {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin: 2rem 0;
-        }
-
-        .star {
-            font-size: 2rem;
-            color: #ddd;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .star:hover, .star.filled {
-            color: #ffd700;
-            transform: scale(1.1);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-        }
-
-        .form-input, .form-textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-input:focus, .form-textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
         /* Buttons */
         .btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -346,6 +228,33 @@
             background: linear-gradient(135deg, #ff7675, #fd79a8);
         }
 
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
         /* Admin Navigation */
         .admin-nav {
             background: rgba(44, 62, 80, 0.95);
@@ -368,40 +277,6 @@
 
         .admin-nav .nav-link:hover, .admin-nav .nav-link.active {
             background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        /* Photo Gallery */
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .photo-item {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .photo-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .photo-caption {
-            padding: 1rem;
-            background: white;
-            text-align: center;
-            font-weight: 500;
         }
 
         /* Alert Messages */
@@ -483,14 +358,11 @@
                 
                 <nav id="guest-nav">
                     <ul class="nav-menu">
-                        <li><a href="#" class="nav-link active" onclick="showSection('home', this)">Home</a></li>
-                        <li><a href="#" class="nav-link" onclick="showSection('access', this)">Access</a></li>
-                        <li><a href="#" class="nav-link" onclick="showSection('attractions', this)">Attractions</a></li>
-                        <li><a href="#" class="nav-link" onclick="showSection('photos', this)">Photos</a></li>
-                        <li><a href="#" class="nav-link" onclick="showSection('music', this)">Music</a></li>
-                        <li><a href="#" class="nav-link" onclick="showSection('rules', this)">Rules</a></li>
-                        <li><a href="#" class="nav-link" onclick="showSection('emergency', this)">Emergency</a></li>
-                        <li><a href="#" class="nav-link" id="review-btn" onclick="showSection('review', this)" style="display: none;">Review</a></li>
+                        <li><span class="nav-link active" onclick="showSection('home', this)">Home</span></li>
+                        <li><span class="nav-link" onclick="showSection('access', this)">Access</span></li>
+                        <li><span class="nav-link" onclick="showSection('attractions', this)">Attractions</span></li>
+                        <li><span class="nav-link" onclick="showSection('photos', this)">Photos</span></li>
+                        <li><span class="nav-link" onclick="showSection('emergency', this)">Emergency</span></li>
                     </ul>
                 </nav>
 
@@ -503,9 +375,9 @@
     <nav class="admin-nav" id="admin-nav">
         <div class="container">
             <ul class="nav-menu">
-                <li><a href="#" class="nav-link" onclick="showSection('admin-dashboard', this)">Dashboard</a></li>
-                <li><a href="#" class="nav-link" onclick="showSection('admin-settings', this)">Settings</a></li>
-                <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+                <li><span class="nav-link" onclick="showSection('admin-dashboard', this)">Dashboard</span></li>
+                <li><span class="nav-link" onclick="showSection('admin-settings', this)">Settings</span></li>
+                <li><span class="nav-link" onclick="logout()">Logout</span></li>
             </ul>
         </div>
     </nav>
@@ -514,7 +386,7 @@
     <section class="hero">
         <div class="container">
             <h1>Welcome to Paradise</h1>
-            <p>Your luxury Cape Coral retreat awaits. Experience tropical living at its finest with modern amenities and stunning waterfront views.</p>
+            <p>Your luxury Cape Coral retreat awaits. Experience tropical living at its finest.</p>
         </div>
     </section>
 
@@ -585,51 +457,41 @@
         <section id="attractions-section" class="content-section">
             <h2 class="section-title">Local Attractions</h2>
             
-            <div class="attraction-item">
-                <div class="attraction-icon">🏖️</div>
-                <div class="attraction-info">
-                    <h3>Yacht Club Beach</h3>
-                    <div class="attraction-details">Beach • 2.5 miles (6 min drive) • ⭐ 4.5</div>
+            <div class="cards-grid">
+                <div class="card">
+                    <span class="card-icon">🏖️</span>
+                    <h3 class="card-title">Yacht Club Beach</h3>
+                    <p class="card-text">Beach • 2.5 miles (6 min drive) • ⭐ 4.5</p>
                 </div>
-            </div>
 
-            <div class="attraction-item">
-                <div class="attraction-icon">🏊</div>
-                <div class="attraction-info">
-                    <h3>Cape Coral Beach at Four Freedoms Park</h3>
-                    <div class="attraction-details">Beach • 3.2 miles (8 min drive) • ⭐ 4.3</div>
+                <div class="card">
+                    <span class="card-icon">🏊</span>
+                    <h3 class="card-title">Cape Coral Beach</h3>
+                    <p class="card-text">Beach • 3.2 miles (8 min drive) • ⭐ 4.3</p>
                 </div>
-            </div>
 
-            <div class="attraction-item">
-                <div class="attraction-icon">🦞</div>
-                <div class="attraction-info">
-                    <h3>The Lobster Lady</h3>
-                    <div class="attraction-details">Restaurant • 4.8 miles (12 min drive) • ⭐ 5.0</div>
+                <div class="card">
+                    <span class="card-icon">🦞</span>
+                    <h3 class="card-title">The Lobster Lady</h3>
+                    <p class="card-text">Restaurant • 4.8 miles (12 min drive) • ⭐ 5.0</p>
                 </div>
-            </div>
 
-            <div class="attraction-item">
-                <div class="attraction-icon">🌳</div>
-                <div class="attraction-info">
-                    <h3>Rotary Park Environmental Center</h3>
-                    <div class="attraction-details">Nature • 5.1 miles (12 min drive) • ⭐ 4.4</div>
+                <div class="card">
+                    <span class="card-icon">🌳</span>
+                    <h3 class="card-title">Rotary Park</h3>
+                    <p class="card-text">Nature • 5.1 miles (12 min drive) • ⭐ 4.4</p>
                 </div>
-            </div>
 
-            <div class="attraction-item">
-                <div class="attraction-icon">💦</div>
-                <div class="attraction-info">
-                    <h3>Sun Splash Family Waterpark</h3>
-                    <div class="attraction-details">Entertainment • 6.3 miles (15 min drive) • ⭐ 4.1</div>
+                <div class="card">
+                    <span class="card-icon">💦</span>
+                    <h3 class="card-title">Sun Splash Waterpark</h3>
+                    <p class="card-text">Entertainment • 6.3 miles (15 min drive) • ⭐ 4.1</p>
                 </div>
-            </div>
 
-            <div class="attraction-item">
-                <div class="attraction-icon">🛒</div>
-                <div class="attraction-info">
-                    <h3>Cape Coral Farmers Market</h3>
-                    <div class="attraction-details">Shopping • 4.2 miles (10 min drive) • ⭐ 4.2</div>
+                <div class="card">
+                    <span class="card-icon">🛒</span>
+                    <h3 class="card-title">Farmers Market</h3>
+                    <p class="card-text">Shopping • 4.2 miles (10 min drive) • ⭐ 4.2</p>
                 </div>
             </div>
         </section>
@@ -647,122 +509,30 @@
             </div>
         </section>
 
-        <!-- Music Section -->
-        <section id="music-section" class="content-section">
-            <h2 class="section-title">Home Audio System</h2>
-            
-            <div class="cards-grid">
-                <div class="card" style="background: linear-gradient(135deg, #1DB954, #1ed760); color: white;">
-                    <span class="card-icon">🎧</span>
-                    <h3 class="card-title" style="color: white;">Connect to House Speakers</h3>
-                    <p style="color: rgba(255,255,255,0.9);">Control the house music from your device!</p>
-                    <button class="btn" onclick="connectSpotify()" style="background: rgba(255,255,255,0.2); margin-top: 1rem;">🎵 Open Spotify</button>
-                </div>
-
-                <div class="card">
-                    <span class="card-icon">📱</span>
-                    <h3 class="card-title">Quick Setup</h3>
-                    <div class="card-text">
-                        <p><strong>1.</strong> Open Spotify on your device</p>
-                        <p><strong>2.</strong> Play any song</p>
-                        <p><strong>3.</strong> Tap "Devices" icon</p>
-                        <p><strong>4.</strong> Select "Cape Coral Retreat Audio"</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Rules Section -->
-        <section id="rules-section" class="content-section">
-            <h2 class="section-title">House Guidelines</h2>
-            
-            <div class="cards-grid">
-                <div class="card">
-                    <span class="card-icon">🏠</span>
-                    <h3 class="card-title">House Rules</h3>
-                    <div class="card-text">
-                        <p><strong>✗</strong> No pets, smoking, or parties</p>
-                        <p><strong>✗</strong> No loud music after 10 PM</p>
-                        <p><strong>✓</strong> Respect the property and neighbors</p>
-                        <p><strong>✓</strong> Park in designated areas only</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-icon">🧺</span>
-                    <h3 class="card-title">Check-out Instructions</h3>
-                    <div class="card-text">
-                        <p><strong>•</strong> Turn off all lights</p>
-                        <p><strong>•</strong> Close and lock all doors</p>
-                        <p><strong>•</strong> No wet laundry in washer</p>
-                        <p><strong>•</strong> Leave beds unmade for cleaning</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="card-icon">🗑️</span>
-                    <h3 class="card-title">Trash & Recycling</h3>
-                    <div class="card-text">
-                        <p><strong>Pickup:</strong> Monday morning</p>
-                        <p><strong>Action:</strong> Take bins to curb Sunday night</p>
-                        <p><strong>Location:</strong> Right side of house by AC units</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Emergency Section -->
         <section id="emergency-section" class="content-section">
             <h2 class="section-title">Emergency Contacts</h2>
             
             <div class="cards-grid">
-                <div class="emergency-card card">
+                <div class="card" style="background: linear-gradient(135deg, #ff7675, #fd79a8); color: white;">
                     <span class="card-icon">👨‍🔧</span>
-                    <h3 class="card-title">Property Manager</h3>
-                    <a href="tel:+12397229391" class="emergency-phone">(239) 722-9391</a>
-                    <p>Juan - Local Property Manager</p>
+                    <h3 class="card-title" style="color: white;">Property Manager</h3>
+                    <a href="tel:+12397229391" style="font-size: 2rem; font-weight: 700; color: white; text-decoration: none; display: block; margin: 1rem 0;">(239) 722-9391</a>
+                    <p style="color: white;">Juan - Local Property Manager</p>
                 </div>
 
-                <div class="emergency-card card">
+                <div class="card" style="background: linear-gradient(135deg, #ff7675, #fd79a8); color: white;">
                     <span class="card-icon">🚨</span>
-                    <h3 class="card-title">Emergency Services</h3>
-                    <a href="tel:911" class="emergency-phone">911</a>
-                    <p>Police / Fire / Medical Emergency</p>
+                    <h3 class="card-title" style="color: white;">Emergency Services</h3>
+                    <a href="tel:911" style="font-size: 2rem; font-weight: 700; color: white; text-decoration: none; display: block; margin: 1rem 0;">911</a>
+                    <p style="color: white;">Police / Fire / Medical Emergency</p>
                 </div>
 
-                <div class="emergency-card card">
+                <div class="card" style="background: linear-gradient(135deg, #ff7675, #fd79a8); color: white;">
                     <span class="card-icon">👮</span>
-                    <h3 class="card-title">Cape Coral Police</h3>
-                    <a href="tel:+12395743223" class="emergency-phone">(239) 574-3223</a>
-                    <p>Non-Emergency</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Review Section -->
-        <section id="review-section" class="content-section">
-            <h2 class="section-title">Share Your Experience</h2>
-            
-            <div class="card" style="max-width: 600px; margin: 0 auto;">
-                <span class="card-icon">⭐</span>
-                <h3 class="card-title">Rate Your Stay</h3>
-                
-                <div class="star-rating">
-                    <span class="star" onclick="setRating(1)">☆</span>
-                    <span class="star" onclick="setRating(2)">☆</span>
-                    <span class="star" onclick="setRating(3)">☆</span>
-                    <span class="star" onclick="setRating(4)">☆</span>
-                    <span class="star" onclick="setRating(5)">☆</span>
-                </div>
-                <p id="rating-text" style="text-align: center; color: #7f8c8d;">Click the stars to rate your experience</p>
-
-                <div class="form-group">
-                    <label class="form-label">What did you love most about your stay?</label>
-                    <textarea class="form-textarea" id="review-highlights" rows="4" placeholder="The pool was amazing, the location was perfect..."></textarea>
-                </div>
-
-                <div style="text-align: center;">
-                    <button class="btn btn-success" onclick="submitReview()">Submit Review</button>
+                    <h3 class="card-title" style="color: white;">Cape Coral Police</h3>
+                    <a href="tel:+12395743223" style="font-size: 2rem; font-weight: 700; color: white; text-decoration: none; display: block; margin: 1rem 0;">(239) 574-3223</a>
+                    <p style="color: white;">Non-Emergency</p>
                 </div>
             </div>
         </section>
@@ -806,4 +576,194 @@
 
         <!-- Admin Settings -->
         <section id="admin-settings-section" class="content-section">
-            <h2 class="
+            <h2 class="section-title">Admin Settings</h2>
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <span class="card-icon">🖼️</span>
+                    <h3 class="card-title">Background Image</h3>
+                    <div class="form-group">
+                        <label class="form-label">Upload Background Image</label>
+                        <input type="file" class="form-input" id="background-image" accept="image/*" onchange="uploadBackgroundImage()">
+                        <p style="font-size: 0.9rem; color: #7f8c8d; margin-top: 0.5rem;">Upload a beautiful image to use as the portal background</p>
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button class="btn btn-success" onclick="applyBackgroundImage()">Apply Background</button>
+                        <button class="btn btn-danger" onclick="removeBackgroundImage()">Remove Background</button>
+                    </div>
+                    <div id="background-preview" style="margin-top: 1rem;"></div>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">📶</span>
+                    <h3 class="card-title">WiFi Settings</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Network Name</label>
+                            <input type="text" class="form-input" id="admin-wifi-name" value="CapeCoral_Retreat_Guest">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">WiFi Password</label>
+                            <input type="text" class="form-input" id="admin-wifi-password" value="Tropical2025!">
+                        </div>
+                    </div>
+                    <button class="btn btn-success" onclick="updateWifiSettings()">Update WiFi Settings</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Guest data
+        const guestData = {
+            guestName: 'John & Sarah Smith',
+            checkIn: 'July 18, 2025',
+            checkOut: 'July 21, 2025',
+            guestCount: 4,
+            confirmation: 'ABC123',
+            doorCode: '1234',
+            wifiName: 'CapeCoral_Retreat_Guest',
+            wifiPassword: 'Tropical2025!'
+        };
+
+        // Navigation Functions
+        function showSection(sectionId, element) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId + '-section');
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            }
+        }
+
+        // Admin Functions
+        function adminLogin() {
+            const password = prompt('Enter admin password:');
+            if (password === 'admin1128') {
+                document.getElementById('guest-nav').style.display = 'none';
+                document.getElementById('admin-nav').classList.add('active');
+                showSection('admin-dashboard');
+                showAlert('Welcome to admin!', 'success');
+            } else if (password !== null) {
+                showAlert('Wrong password', 'error');
+            }
+        }
+
+        function logout() {
+            document.getElementById('guest-nav').style.display = 'block';
+            document.getElementById('admin-nav').classList.remove('active');
+            showSection('home');
+            showAlert('Logged out successfully', 'info');
+        }
+
+        function updateGuestInfo() {
+            const newGuestName = document.getElementById('admin-guest-name').value;
+            const checkinDate = document.getElementById('admin-checkin').value;
+            const checkoutDate = document.getElementById('admin-checkout').value;
+            
+            guestData.guestName = newGuestName;
+            
+            if (checkinDate) {
+                guestData.checkIn = new Date(checkinDate).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+            if (checkoutDate) {
+                guestData.checkOut = new Date(checkoutDate).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+            
+            updateDisplays();
+            showAlert('Guest information updated!', 'success');
+        }
+
+        function generateNewDoorCode() {
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+            document.getElementById('admin-door-code').value = code;
+            guestData.doorCode = code;
+            updateDisplays();
+            showAlert(`New door code: ${code}`, 'info');
+        }
+
+        function updateWifiSettings() {
+            guestData.wifiName = document.getElementById('admin-wifi-name').value;
+            guestData.wifiPassword = document.getElementById('admin-wifi-password').value;
+            updateDisplays();
+            showAlert('WiFi settings updated!', 'success');
+        }
+
+        function updateDisplays() {
+            // Update all display elements
+            const elements = {
+                'display-guest-name': guestData.guestName,
+                'display-checkin': guestData.checkIn,
+                'display-checkout': guestData.checkOut,
+                'display-guest-count': guestData.guestCount,
+                'display-confirmation': guestData.confirmation,
+                'display-door-code': guestData.doorCode,
+                'display-wifi-name': guestData.wifiName,
+                'display-wifi-password': guestData.wifiPassword,
+                'access-door-code': guestData.doorCode,
+                'access-wifi-name': guestData.wifiName,
+                'access-wifi-password': guestData.wifiPassword
+            };
+            
+            Object.keys(elements).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = elements[id];
+                }
+            });
+        }
+
+        // Background Image Functions
+        function uploadBackgroundImage() {
+            const fileInput = document.getElementById('background-image');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const imageData = e.target.result;
+                    localStorage.setItem('backgroundImage', imageData);
+                    showBackgroundPreview(imageData);
+                    showAlert('Background image uploaded! Click "Apply Background" to use it.', 'success');
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showBackgroundPreview(imageData) {
+            const preview = document.getElementById('background-preview');
+            preview.innerHTML = `
+                <div style="text-align: center;">
+                    <img src="${imageData}" style="max-width: 200px; height: 120px; object-fit: cover; border-radius: 8px;" alt="Background Preview">
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #7f8c8d;">Preview</p>
+                </div>
+            `;
+        }
+
+        function applyBackgroundImage() {
+            const savedImage = localStorage.getItem('backgroundImage');
+            if (savedImage) {
+                const overlay = 'linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%)';
+                document.body.style.background = `${overlay}, url('${savedImage}')`;
+                document.body.style.backgroundSize = 'cover
