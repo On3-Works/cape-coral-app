@@ -375,8 +375,8 @@
     <nav class="admin-nav" id="admin-nav">
         <div class="container">
             <ul class="nav-menu">
-                <li><span class="nav-link" onclick="showSection('admin-dashboard', this)">Dashboard</span></li>
-                <li><span class="nav-link" onclick="showSection('admin-settings', this)">Settings</span></li>
+                <li><span class="nav-link active" onclick="showAdminSection('dashboard', this)">Dashboard</span></li>
+                <li><span class="nav-link" onclick="showAdminSection('settings', this)">Settings</span></li>
                 <li><span class="nav-link" onclick="logout()">Logout</span></li>
             </ul>
         </div>
@@ -640,21 +640,66 @@
                 targetSection.classList.add('active');
             }
             
-            // Update navigation
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => link.classList.remove('active'));
+            // Update guest navigation
+            const guestNavLinks = document.querySelectorAll('#guest-nav .nav-link');
+            guestNavLinks.forEach(link => link.classList.remove('active'));
             if (element) {
                 element.classList.add('active');
             }
+
+            // Remove admin nav active states
+            const adminNavLinks = document.querySelectorAll('#admin-nav .nav-link');
+            adminNavLinks.forEach(link => link.classList.remove('active'));
+        }
+
+        function showAdminSection(sectionId, element) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected admin section
+            const targetSection = document.getElementById('admin-' + sectionId + '-section');
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update admin navigation
+            const adminNavLinks = document.querySelectorAll('#admin-nav .nav-link');
+            adminNavLinks.forEach(link => link.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            }
+
+            // Remove guest nav active states
+            const guestNavLinks = document.querySelectorAll('#guest-nav .nav-link');
+            guestNavLinks.forEach(link => link.classList.remove('active'));
         }
 
         // Admin Functions
         function adminLogin() {
+            console.log('Admin login clicked'); // Debug log
             const password = prompt('Enter admin password:');
+            console.log('Password entered:', password); // Debug log
+            
             if (password === 'admin1128') {
-                document.getElementById('guest-nav').style.display = 'none';
-                document.getElementById('admin-nav').classList.add('active');
-                showSection('admin-dashboard');
+                console.log('Password correct, switching to admin mode'); // Debug log
+                
+                // Hide guest navigation
+                const guestNav = document.getElementById('guest-nav');
+                if (guestNav) {
+                    guestNav.style.display = 'none';
+                }
+                
+                // Show admin navigation
+                const adminNav = document.getElementById('admin-nav');
+                if (adminNav) {
+                    adminNav.classList.add('active');
+                }
+                
+                // Show admin dashboard
+                showAdminSection('dashboard', document.querySelector('#admin-nav .nav-link:first-child'));
                 showAlert('Welcome to admin!', 'success');
             } else if (password !== null) {
                 showAlert('Wrong password', 'error');
@@ -664,7 +709,7 @@
         function logout() {
             document.getElementById('guest-nav').style.display = 'block';
             document.getElementById('admin-nav').classList.remove('active');
-            showSection('home');
+            showSection('home', document.querySelector('#guest-nav .nav-link:first-child'));
             showAlert('Logged out successfully', 'info');
         }
 
@@ -733,6 +778,21 @@
             });
         }
 
+        // Alert Functions
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 3000);
+        }
+
         // Background Image Functions
         function uploadBackgroundImage() {
             const fileInput = document.getElementById('background-image');
@@ -742,7 +802,8 @@
                 
                 reader.onload = function(e) {
                     const imageData = e.target.result;
-                    localStorage.setItem('backgroundImage', imageData);
+                    // Store in memory instead of localStorage
+                    window.backgroundImageData = imageData;
                     showBackgroundPreview(imageData);
                     showAlert('Background image uploaded! Click "Apply Background" to use it.', 'success');
                 };
@@ -762,8 +823,30 @@
         }
 
         function applyBackgroundImage() {
-            const savedImage = localStorage.getItem('backgroundImage');
+            const savedImage = window.backgroundImageData;
             if (savedImage) {
                 const overlay = 'linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%)';
                 document.body.style.background = `${overlay}, url('${savedImage}')`;
-                document.body.style.backgroundSize = 'cover
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundAttachment = 'fixed';
+                showAlert('Background image applied!', 'success');
+            } else {
+                showAlert('Please upload an image first', 'error');
+            }
+        }
+
+        function removeBackgroundImage() {
+            document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            window.backgroundImageData = null;
+            document.getElementById('background-preview').innerHTML = '';
+            showAlert('Background image removed', 'info');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDisplays();
+        });
+    </script>
+</body>
+</html>
